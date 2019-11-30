@@ -1,0 +1,5 @@
+/home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/CMakeFiles/edit_cache.dir
+/home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/CMakeFiles/Generations.dir
+/home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/CMakeFiles/rebuild_cache.dir
+/home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/CMakeFiles/admin.dir
+/home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/CMakeFiles/adminsealops.dir

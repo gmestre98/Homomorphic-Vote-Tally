@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/generations.cpp
+generations.h
+/home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/generations.h
+
+/home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/generations.h
+iostream
+-
+string
+-
+bits/stdc++.h
+-
+

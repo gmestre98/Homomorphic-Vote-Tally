@@ -50,12 +50,14 @@ void weight_encryption(int nvoters, int* weights){
   auto context = SEALContext::Create(parms);
 
 
-
-  Ciphertext encrypted_weight;
+  // Getting the public key from the corresponding file
   ifstream pkey;
   pkey.open("../Proj/Keys/election_public_key.txt", ios::binary);
   PublicKey election_public_key;
   election_public_key.load(context, pkey);
+  pkey.close();
+
+  // Setting the encryption process
   Encryptor encryptor(context, election_public_key);
   string f = "ecrypted_voter_weights";
   string txt = ".txt";
@@ -65,8 +67,17 @@ void weight_encryption(int nvoters, int* weights){
   string dest = " ../Proj/Keys";
   string xau = "sudo rm -r ";
   string ciao;
+  BatchEncoder batch_encoder(context);
+  Plaintext plainvector;
+  Ciphertext encrypted_weight;
+
+  batch_encoder.encode(weights, plainvector);
+  encryptor.encrypt(plainvector, encrypted_weight);
 
 
+
+
+/*
   for(int i=0; i < nvoters; i = i + 1){
     ofstream file;
     Plaintext xplain(to_string(weights[i]));
@@ -85,5 +96,5 @@ void weight_encryption(int nvoters, int* weights){
     ciao = xau;
     ciao.append(a);
     system(ciao.c_str());
-  }
+  }*/
 }
