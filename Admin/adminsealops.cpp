@@ -57,8 +57,15 @@ void weight_encryption(int nvoters, int* weights){
   election_public_key.load(context, pkey);
   pkey.close();
 
+// Getting the private key from the corresponding file
+  pkey.open("../Proj/Keys/election_secret_key.txt", ios::binary);
+  SecretKey election_secret_key;
+  election_secret_key.load(context, pkey);
+  pkey.close();
+
   // Setting the encryption process
   Encryptor encryptor(context, election_public_key);
+  Decryptor decryptor(context, election_secret_key);
   string f = "ecrypted_voter_weights";
   string txt = ".txt";
   string a;
@@ -71,10 +78,27 @@ void weight_encryption(int nvoters, int* weights){
   Plaintext plainvector;
   Ciphertext encrypted_weight;
 
-  batch_encoder.encode(weights, plainvector);
-  encryptor.encrypt(plainvector, encrypted_weight);
+  size_t slot_count = batch_encoder.slot_count();
+  size_t row_size = slot_count / 2;
+  cout << "Plaintext matrix row size: " << row_size << endl;
 
+  vector<uint64_t> pod_matrix(slot_count, 0ULL);
 
+  for(int i=0; i < nvoters; i = i + 1){
+    pod_matrix[i] = (uint64_t) weights[i];
+  }
+
+  batch_encoder.encode(pod_matrix, plainvector);
+
+  Ciphertext encrypted_matrix;
+  encryptor.encrypt(plainvector, encrypted_matrix);
+
+  Plaintext plain_result;
+  decryptor.decrypt(encrypted_matrix, plain_result);
+  vector<uint64_t> pod_result;
+  batch_encoder.decode(plain_result, pod_result);
+
+  print_matrix(pod_result, row_size);
 
 
 /*
