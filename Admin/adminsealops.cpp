@@ -10,7 +10,7 @@ void generate_election_keys(){
   size_t poly_modulus_degree = 4096;
   parms.set_poly_modulus_degree(poly_modulus_degree);
   parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
-  parms.set_plain_modulus(1021);
+  parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
   auto context = SEALContext::Create(parms);
   PublicKey election_public_key;
   SecretKey election_secret_key;
@@ -38,7 +38,6 @@ void generate_election_keys(){
 }
 
 
-
 void weight_encryption(int nvoters, int* weights){
 
   // Setting the parameters for the encryption
@@ -46,9 +45,8 @@ void weight_encryption(int nvoters, int* weights){
   size_t poly_modulus_degree = 4096;
   parms.set_poly_modulus_degree(poly_modulus_degree);
   parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
-  parms.set_plain_modulus(1021);
+  parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
   auto context = SEALContext::Create(parms);
-
 
   // Getting the public key from the corresponding file
   ifstream pkey;
@@ -57,31 +55,13 @@ void weight_encryption(int nvoters, int* weights){
   election_public_key.load(context, pkey);
   pkey.close();
 
-// Getting the private key from the corresponding file
-  pkey.open("../Proj/Keys/election_secret_key.txt", ios::binary);
-  SecretKey election_secret_key;
-  election_secret_key.load(context, pkey);
-  pkey.close();
 
   // Setting the encryption process
   Encryptor encryptor(context, election_public_key);
-  Decryptor decryptor(context, election_secret_key);
-  string f = "ecrypted_voter_weights";
-  string txt = ".txt";
-  string a;
-  string forcabruta = "sudo cp ";
-  string forcamenos;
-  string dest = " ../Proj/Keys";
-  string xau = "sudo rm -r ";
-  string ciao;
   BatchEncoder batch_encoder(context);
   Plaintext plainvector;
-  Ciphertext encrypted_weight;
-
+  Ciphertext encrypted_matrix;
   size_t slot_count = batch_encoder.slot_count();
-  size_t row_size = slot_count / 2;
-  cout << "Plaintext matrix row size: " << row_size << endl;
-
   vector<uint64_t> pod_matrix(slot_count, 0ULL);
 
   for(int i=0; i < nvoters; i = i + 1){
@@ -89,36 +69,14 @@ void weight_encryption(int nvoters, int* weights){
   }
 
   batch_encoder.encode(pod_matrix, plainvector);
-
-  Ciphertext encrypted_matrix;
   encryptor.encrypt(plainvector, encrypted_matrix);
 
-  Plaintext plain_result;
-  decryptor.decrypt(encrypted_matrix, plain_result);
-  vector<uint64_t> pod_result;
-  batch_encoder.decode(plain_result, pod_result);
+  ofstream weights_file;
+  weights_file.open("weights_file.txt", ofstream::binary);
+  encrypted_matrix.save(weights_file);
+  weights_file.close();
 
-  print_matrix(pod_result, row_size);
-
-
-/*
-  for(int i=0; i < nvoters; i = i + 1){
-    ofstream file;
-    Plaintext xplain(to_string(weights[i]));
-    encryptor.encrypt(xplain, encrypted_weight);
-    a = f;
-    a.append(to_string(i + 1));
-    a.append(txt);
-    file.open(a.c_str(), ofstream::binary);
-    encrypted_weight.save(file);
-    file.close();
-
-    forcamenos = forcabruta;
-    forcamenos.append(a);
-    forcamenos.append(dest);
-    system(forcamenos.c_str());
-    ciao = xau;
-    ciao.append(a);
-    system(ciao.c_str());
-  }*/
+  // Moving the file to the right place
+  system("sudo cp weights_file.txt ../Proj/Tally");
+  system("sudo rm -r weights_file.txt");
 }

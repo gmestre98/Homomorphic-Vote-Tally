@@ -3,7 +3,8 @@
 using namespace std;
 
 void generaterootca(){
-  system("cd .. && sudo rm -r Proj && sudo mkdir Proj");
+  system("cd .. && sudo rm -r Proj");
+  system("cd .. && sudo mkdir Proj");
   system("cd .. && sudo mkdir Proj/CA");
   system("cd ../Proj/CA && sudo openssl genrsa -des3 -out my-ca.key 2048");
   system("cd ../Proj/CA && sudo openssl req -new -x509 -days 3650 -key my-ca.key -out my-ca.crt");

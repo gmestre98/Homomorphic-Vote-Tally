@@ -43,10 +43,10 @@ RM = /usr/local/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin
+CMAKE_SOURCE_DIR = /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin
+CMAKE_BINARY_DIR = /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin
 
 # Include any dependencies generated for this target.
 include CMakeFiles/Generations.dir/depend.make
@@ -59,16 +59,16 @@ include CMakeFiles/Generations.dir/flags.make
 
 CMakeFiles/Generations.dir/generations.cpp.o: CMakeFiles/Generations.dir/flags.make
 CMakeFiles/Generations.dir/generations.cpp.o: generations.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Generations.dir/generations.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Generations.dir/generations.cpp.o -c /home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/generations.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Generations.dir/generations.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Generations.dir/generations.cpp.o -c /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/generations.cpp
 
 CMakeFiles/Generations.dir/generations.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Generations.dir/generations.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/generations.cpp > CMakeFiles/Generations.dir/generations.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/generations.cpp > CMakeFiles/Generations.dir/generations.cpp.i
 
 CMakeFiles/Generations.dir/generations.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Generations.dir/generations.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/generations.cpp -o CMakeFiles/Generations.dir/generations.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/generations.cpp -o CMakeFiles/Generations.dir/generations.cpp.s
 
 # Object files for target Generations
 Generations_OBJECTS = \
@@ -80,7 +80,7 @@ Generations_EXTERNAL_OBJECTS =
 libGenerations.a: CMakeFiles/Generations.dir/generations.cpp.o
 libGenerations.a: CMakeFiles/Generations.dir/build.make
 libGenerations.a: CMakeFiles/Generations.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libGenerations.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libGenerations.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/Generations.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Generations.dir/link.txt --verbose=$(VERBOSE)
 
@@ -94,6 +94,6 @@ CMakeFiles/Generations.dir/clean:
 .PHONY : CMakeFiles/Generations.dir/clean
 
 CMakeFiles/Generations.dir/depend:
-	cd /home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin /home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin /home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin /home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin /home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/CMakeFiles/Generations.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/Generations.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/Generations.dir/depend
 

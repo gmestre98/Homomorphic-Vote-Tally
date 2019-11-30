@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/admin.cpp" "/home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/CMakeFiles/admin.dir/admin.cpp.o"
+  "/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/admin.cpp" "/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/admin.dir/admin.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -15,8 +15,8 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/CMakeFiles/Generations.dir/DependInfo.cmake"
-  "/home/gmestre/Desktop/Homomorphic-Vote-Tally/Admin/CMakeFiles/adminsealops.dir/DependInfo.cmake"
+  "/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/Generations.dir/DependInfo.cmake"
+  "/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/adminsealops.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.
