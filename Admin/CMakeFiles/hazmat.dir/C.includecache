@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/gmestre/Homomorphic-Vote-Tally/Admin/hazmat.c
+randombytes.h
+/home/gmestre/Homomorphic-Vote-Tally/Admin/randombytes.h
+hazmat.h
+/home/gmestre/Homomorphic-Vote-Tally/Admin/hazmat.h
+assert.h
+-
+string.h
+-
+
+/home/gmestre/Homomorphic-Vote-Tally/Admin/hazmat.h
+inttypes.h
+-
+
+/home/gmestre/Homomorphic-Vote-Tally/Admin/randombytes.h
+CRTDEFS.H
+-
+sys/syscall.h
+-
+unistd.h
+-
+

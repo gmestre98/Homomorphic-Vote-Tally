@@ -1,0 +1,14 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/gmestre/Homomorphic-Vote-Tally/Admin/tweetnacl.c
+tweetnacl.h
+/home/gmestre/Homomorphic-Vote-Tally/Admin/tweetnacl.h
+
+/home/gmestre/Homomorphic-Vote-Tally/Admin/tweetnacl.h
+

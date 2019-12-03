@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/generations.cpp
+/home/gmestre/Homomorphic-Vote-Tally/Admin/generations.cpp
 generations.h
-/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/generations.h
+/home/gmestre/Homomorphic-Vote-Tally/Admin/generations.h
 
-/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/generations.h
+/home/gmestre/Homomorphic-Vote-Tally/Admin/generations.h
 iostream
 -
 string

@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/adminsealops.cpp
+/home/gmestre/Homomorphic-Vote-Tally/Admin/adminsealops.cpp
 adminsealops.h
-/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/adminsealops.h
+/home/gmestre/Homomorphic-Vote-Tally/Admin/adminsealops.h
 
-/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/adminsealops.h
+/home/gmestre/Homomorphic-Vote-Tally/Admin/adminsealops.h
 cstddef
 -
 iostream
@@ -40,7 +40,37 @@ algorithm
 numeric
 -
 seal/seal.h
-/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/seal/seal.h
+/home/gmestre/Homomorphic-Vote-Tally/Admin/seal/seal.h
+sss.h
+/home/gmestre/Homomorphic-Vote-Tally/Admin/sss.h
+randombytes.h
+/home/gmestre/Homomorphic-Vote-Tally/Admin/randombytes.h
+assert.h
+-
+string.h
+-
+
+/home/gmestre/Homomorphic-Vote-Tally/Admin/hazmat.h
+inttypes.h
+-
+
+/home/gmestre/Homomorphic-Vote-Tally/Admin/randombytes.h
+CRTDEFS.H
+-
+sys/syscall.h
+-
+unistd.h
+-
+
+/home/gmestre/Homomorphic-Vote-Tally/Admin/sss.h
+hazmat.h
+/home/gmestre/Homomorphic-Vote-Tally/Admin/hazmat.h
+tweetnacl.h
+/home/gmestre/Homomorphic-Vote-Tally/Admin/tweetnacl.h
+inttypes.h
+-
+
+/home/gmestre/Homomorphic-Vote-Tally/Admin/tweetnacl.h
 
 /usr/local/include/SEAL-3.4/seal/batchencoder.h
 vector

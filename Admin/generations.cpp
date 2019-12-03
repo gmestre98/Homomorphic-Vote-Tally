@@ -6,13 +6,8 @@ void generaterootca(){
   system("cd .. && sudo rm -r Proj");
   system("cd .. && sudo mkdir Proj");
   system("cd .. && sudo mkdir Proj/CA");
-  system("cd ../Proj/CA && sudo openssl genrsa -des3 -out my-ca.key 2048");
+  system("cd ../Proj/CA && sudo openssl genrsa -out my-ca.key 2048");
   system("cd ../Proj/CA && sudo openssl req -new -x509 -days 3650 -key my-ca.key -out my-ca.crt");
-}
-
-void generateprivatekey(){
-  system("sudo mkdir ../Proj/Keys");
-  system("cd ../Proj/Keys && sudo openssl genrsa -out privatekey.pem 1024");
 }
 
 void installrootCAtally(){
@@ -36,6 +31,9 @@ void voter_privatekey(int voter){
   string votefolder;
   string command;
   string openvotefolder;
+  string sign1 = "sudo openssl dgst -sha256 -sign ../Proj/CA/my-ca.key -out signvkey.sha256 ../Proj/Voters/";
+  string sign2 = "/voter-cert.key";
+  string mv1 = "sudo mv signvkey.sha256 ../Proj/Voters/";
 
   openvotefolder = "cd "; //open the directory
   votefolder = "../Proj/Voters/";
@@ -44,6 +42,11 @@ void voter_privatekey(int voter){
   command = " && sudo openssl genrsa -out voter-cert.key 1024";
   openvotefolder.append(command);
   system(openvotefolder.c_str());
+  sign1.append(to_string(voter + 1));
+  sign1.append(sign2);
+  system(sign1.c_str());
+  mv1.append(to_string(voter + 1));
+  system(mv1.c_str());
 }
 
 void voter_certificate(int voter){
@@ -51,6 +54,10 @@ void voter_certificate(int voter){
   string command;
   string openvotefolder;
   string votercertdata;
+  string sign1 = "sudo openssl dgst -sha256 -sign ../Proj/CA/my-ca.key -out signvcert.sha256 ../Proj/Voters/";
+  string sign2 = "/voter-cert.csr";
+  string mv1 = "sudo mv signvcert.sha256 ../Proj/Voters/";
+
 
   openvotefolder = "cd "; //open the directory
   votefolder = "../Proj/Voters/";
@@ -62,6 +69,11 @@ void voter_certificate(int voter){
   votercertdata.append(std::to_string(voter + 1));
   openvotefolder.append(votercertdata);
   system(openvotefolder.c_str());
+  sign1.append(to_string(voter + 1));
+  sign1.append(sign2);
+  system(sign1.c_str());
+  mv1.append(to_string(voter + 1));
+  system(mv1.c_str());
 }
 
 
@@ -73,25 +85,20 @@ void installvoterrootCA(int voter){
   system(command.c_str());
 }
 
-
-void sign_election_public_key(){
-  string command;
-
-  command = "sudo openssl dgst -sha256 -sign ../Proj/CA/my-ca.key -out /tmp/sign.sha256 ../Proj/Keys/election_public_key.txt";
-  system(command.c_str());
-  command = "sudo openssl base64 -in /tmp/sign.sha256 -out ../Proj/Keys/pub_key_sign";
-  system(command.c_str());
-}
-
 void install_election_public_key(int voter){
   string command;
+  string sign1 = "sudo openssl dgst -sha256 -sign ../Proj/CA/my-ca.key -out homopublic.sha256 ../Proj/Voters/";
+  string sign2 = "/election_public_key.txt";
+  string mv1 = "sudo mv homopublic.sha256 ../Proj/Voters/";
 
   command = "sudo cp ../Proj/Keys/election_public_key.txt ../Proj/Voters/";
   command.append(to_string(voter + 1));
   system(command.c_str());
-  command = "sudo cp ../Proj/Keys/pub_key_sign ../Proj/Voters/";
-  command.append(to_string(voter + 1));
-  system(command.c_str());
+  sign1.append(to_string(voter + 1));
+  sign1.append(sign2);
+  system(sign1.c_str());
+  mv1.append(to_string(voter + 1));
+  system(mv1.c_str());
 }
 
 
@@ -105,4 +112,10 @@ void weight_assign(int nvoters, int *weights){
     }while(stoi(a) < 1  ||  stoi(a) > 100);
     weights[i] = stoi(a);
   }
+}
+
+
+void setlastfolders(int nvoters){
+  // Create Ballot Box
+  system("sudo mkdir ../Proj/BallotBox");
 }

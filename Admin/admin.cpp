@@ -20,10 +20,8 @@ int main(int argc, char *argv[]){
   if(weights == NULL)
     cout << "error creating weight array!\n";
   generaterootca();
-  generateprivatekey();
   installrootCAtally();
   generate_election_keys();
-  sign_election_public_key();
   system("sudo mkdir ../Proj/Voters");
   for(int i=0; i < nvoters; i = i + 1){
     createvoterfolder(i);
@@ -32,6 +30,8 @@ int main(int argc, char *argv[]){
     installvoterrootCA(i);
     install_election_public_key(i);
   }
+  breaksecretkey();
   weight_assign(nvoters, weights);
   weight_encryption(nvoters, weights);
+  setlastfolders(nvoters);
 }

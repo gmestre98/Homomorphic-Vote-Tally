@@ -13,6 +13,15 @@
 #include <algorithm>
 #include <numeric>
 #include "seal/seal.h"
+extern "C" {
+  #include "sss.h"
+  #include "randombytes.h"
+  #include <assert.h>
+  #include <string.h>
+}
+
+
 
 void generate_election_keys();
+void breaksecretkey();
 void weight_encryption(int, int*);

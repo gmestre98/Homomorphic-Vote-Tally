@@ -1,24 +1,24 @@
 Determining if the pthread_create exist failed with the following output:
-Change Dir: /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/CMakeTmp
+Change Dir: /home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_2c950/fast"
-/usr/bin/make -f CMakeFiles/cmTC_2c950.dir/build.make CMakeFiles/cmTC_2c950.dir/build
-make[1]: Entering directory '/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_2c950.dir/CheckSymbolExists.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_2c950.dir/CheckSymbolExists.c.o   -c /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/CMakeTmp/CheckSymbolExists.c
-Linking C executable cmTC_2c950
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2c950.dir/link.txt --verbose=1
-/usr/bin/cc      CMakeFiles/cmTC_2c950.dir/CheckSymbolExists.c.o  -o cmTC_2c950 
-CMakeFiles/cmTC_2c950.dir/CheckSymbolExists.c.o: In function `main':
+Run Build Command:"/usr/bin/make" "cmTC_8f675/fast"
+/usr/bin/make -f CMakeFiles/cmTC_8f675.dir/build.make CMakeFiles/cmTC_8f675.dir/build
+make[1]: Entering directory '/home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_8f675.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_8f675.dir/CheckSymbolExists.c.o   -c /home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_8f675
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8f675.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_8f675.dir/CheckSymbolExists.c.o  -o cmTC_8f675 
+CMakeFiles/cmTC_8f675.dir/CheckSymbolExists.c.o: In function `main':
 CheckSymbolExists.c:(.text+0x1b): undefined reference to `pthread_create'
 collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_2c950.dir/build.make:86: recipe for target 'cmTC_2c950' failed
-make[1]: *** [cmTC_2c950] Error 1
-make[1]: Leaving directory '/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/CMakeTmp'
-Makefile:121: recipe for target 'cmTC_2c950/fast' failed
-make: *** [cmTC_2c950/fast] Error 2
+CMakeFiles/cmTC_8f675.dir/build.make:86: recipe for target 'cmTC_8f675' failed
+make[1]: *** [cmTC_8f675] Error 1
+make[1]: Leaving directory '/home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_8f675/fast' failed
+make: *** [cmTC_8f675/fast] Error 2
 
-File /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+File /home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
 /* */
 #include <pthread.h>
 

@@ -48,24 +48,13 @@ RM = /usr/local/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin
+CMAKE_SOURCE_DIR = /home/gmestre/Homomorphic-Vote-Tally/Admin
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin
+CMAKE_BINARY_DIR = /home/gmestre/Homomorphic-Vote-Tally/Admin
 
 #=============================================================================
 # Targets provided globally by CMake.
-
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/local/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-
-.PHONY : edit_cache/fast
 
 # Special rule for the target rebuild_cache
 rebuild_cache:
@@ -78,11 +67,22 @@ rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
 
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/usr/local/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+
+.PHONY : edit_cache/fast
+
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles /home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,19 +111,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named Generations
-
-# Build rule for target.
-Generations: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 Generations
-.PHONY : Generations
-
-# fast build rule for target.
-Generations/fast:
-	$(MAKE) -f CMakeFiles/Generations.dir/build.make CMakeFiles/Generations.dir/build
-.PHONY : Generations/fast
-
-#=============================================================================
 # Target rules for targets named admin
 
 # Build rule for target.
@@ -148,6 +135,71 @@ adminsealops: cmake_check_build_system
 adminsealops/fast:
 	$(MAKE) -f CMakeFiles/adminsealops.dir/build.make CMakeFiles/adminsealops.dir/build
 .PHONY : adminsealops/fast
+
+#=============================================================================
+# Target rules for targets named tweet
+
+# Build rule for target.
+tweet: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tweet
+.PHONY : tweet
+
+# fast build rule for target.
+tweet/fast:
+	$(MAKE) -f CMakeFiles/tweet.dir/build.make CMakeFiles/tweet.dir/build
+.PHONY : tweet/fast
+
+#=============================================================================
+# Target rules for targets named sss
+
+# Build rule for target.
+sss: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 sss
+.PHONY : sss
+
+# fast build rule for target.
+sss/fast:
+	$(MAKE) -f CMakeFiles/sss.dir/build.make CMakeFiles/sss.dir/build
+.PHONY : sss/fast
+
+#=============================================================================
+# Target rules for targets named randombytes
+
+# Build rule for target.
+randombytes: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 randombytes
+.PHONY : randombytes
+
+# fast build rule for target.
+randombytes/fast:
+	$(MAKE) -f CMakeFiles/randombytes.dir/build.make CMakeFiles/randombytes.dir/build
+.PHONY : randombytes/fast
+
+#=============================================================================
+# Target rules for targets named hazmat
+
+# Build rule for target.
+hazmat: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 hazmat
+.PHONY : hazmat
+
+# fast build rule for target.
+hazmat/fast:
+	$(MAKE) -f CMakeFiles/hazmat.dir/build.make CMakeFiles/hazmat.dir/build
+.PHONY : hazmat/fast
+
+#=============================================================================
+# Target rules for targets named Generations
+
+# Build rule for target.
+Generations: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 Generations
+.PHONY : Generations
+
+# fast build rule for target.
+Generations/fast:
+	$(MAKE) -f CMakeFiles/Generations.dir/build.make CMakeFiles/Generations.dir/build
+.PHONY : Generations/fast
 
 admin.o: admin.cpp.o
 
@@ -230,17 +282,129 @@ generations.cpp.s:
 	$(MAKE) -f CMakeFiles/Generations.dir/build.make CMakeFiles/Generations.dir/generations.cpp.s
 .PHONY : generations.cpp.s
 
+hazmat.o: hazmat.c.o
+
+.PHONY : hazmat.o
+
+# target to build an object file
+hazmat.c.o:
+	$(MAKE) -f CMakeFiles/hazmat.dir/build.make CMakeFiles/hazmat.dir/hazmat.c.o
+.PHONY : hazmat.c.o
+
+hazmat.i: hazmat.c.i
+
+.PHONY : hazmat.i
+
+# target to preprocess a source file
+hazmat.c.i:
+	$(MAKE) -f CMakeFiles/hazmat.dir/build.make CMakeFiles/hazmat.dir/hazmat.c.i
+.PHONY : hazmat.c.i
+
+hazmat.s: hazmat.c.s
+
+.PHONY : hazmat.s
+
+# target to generate assembly for a file
+hazmat.c.s:
+	$(MAKE) -f CMakeFiles/hazmat.dir/build.make CMakeFiles/hazmat.dir/hazmat.c.s
+.PHONY : hazmat.c.s
+
+randombytes.o: randombytes.c.o
+
+.PHONY : randombytes.o
+
+# target to build an object file
+randombytes.c.o:
+	$(MAKE) -f CMakeFiles/randombytes.dir/build.make CMakeFiles/randombytes.dir/randombytes.c.o
+.PHONY : randombytes.c.o
+
+randombytes.i: randombytes.c.i
+
+.PHONY : randombytes.i
+
+# target to preprocess a source file
+randombytes.c.i:
+	$(MAKE) -f CMakeFiles/randombytes.dir/build.make CMakeFiles/randombytes.dir/randombytes.c.i
+.PHONY : randombytes.c.i
+
+randombytes.s: randombytes.c.s
+
+.PHONY : randombytes.s
+
+# target to generate assembly for a file
+randombytes.c.s:
+	$(MAKE) -f CMakeFiles/randombytes.dir/build.make CMakeFiles/randombytes.dir/randombytes.c.s
+.PHONY : randombytes.c.s
+
+sss.o: sss.c.o
+
+.PHONY : sss.o
+
+# target to build an object file
+sss.c.o:
+	$(MAKE) -f CMakeFiles/sss.dir/build.make CMakeFiles/sss.dir/sss.c.o
+.PHONY : sss.c.o
+
+sss.i: sss.c.i
+
+.PHONY : sss.i
+
+# target to preprocess a source file
+sss.c.i:
+	$(MAKE) -f CMakeFiles/sss.dir/build.make CMakeFiles/sss.dir/sss.c.i
+.PHONY : sss.c.i
+
+sss.s: sss.c.s
+
+.PHONY : sss.s
+
+# target to generate assembly for a file
+sss.c.s:
+	$(MAKE) -f CMakeFiles/sss.dir/build.make CMakeFiles/sss.dir/sss.c.s
+.PHONY : sss.c.s
+
+tweetnacl.o: tweetnacl.c.o
+
+.PHONY : tweetnacl.o
+
+# target to build an object file
+tweetnacl.c.o:
+	$(MAKE) -f CMakeFiles/tweet.dir/build.make CMakeFiles/tweet.dir/tweetnacl.c.o
+.PHONY : tweetnacl.c.o
+
+tweetnacl.i: tweetnacl.c.i
+
+.PHONY : tweetnacl.i
+
+# target to preprocess a source file
+tweetnacl.c.i:
+	$(MAKE) -f CMakeFiles/tweet.dir/build.make CMakeFiles/tweet.dir/tweetnacl.c.i
+.PHONY : tweetnacl.c.i
+
+tweetnacl.s: tweetnacl.c.s
+
+.PHONY : tweetnacl.s
+
+# target to generate assembly for a file
+tweetnacl.c.s:
+	$(MAKE) -f CMakeFiles/tweet.dir/build.make CMakeFiles/tweet.dir/tweetnacl.c.s
+.PHONY : tweetnacl.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... edit_cache"
-	@echo "... Generations"
 	@echo "... rebuild_cache"
+	@echo "... edit_cache"
 	@echo "... admin"
 	@echo "... adminsealops"
+	@echo "... tweet"
+	@echo "... sss"
+	@echo "... randombytes"
+	@echo "... hazmat"
+	@echo "... Generations"
 	@echo "... admin.o"
 	@echo "... admin.i"
 	@echo "... admin.s"
@@ -250,6 +414,18 @@ help:
 	@echo "... generations.o"
 	@echo "... generations.i"
 	@echo "... generations.s"
+	@echo "... hazmat.o"
+	@echo "... hazmat.i"
+	@echo "... hazmat.s"
+	@echo "... randombytes.o"
+	@echo "... randombytes.i"
+	@echo "... randombytes.s"
+	@echo "... sss.o"
+	@echo "... sss.i"
+	@echo "... sss.s"
+	@echo "... tweetnacl.o"
+	@echo "... tweetnacl.i"
+	@echo "... tweetnacl.s"
 .PHONY : help
 
 

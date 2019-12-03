@@ -4,6 +4,10 @@
 CMakeFiles/admin.dir/admin.cpp.o: admin.cpp
 CMakeFiles/admin.dir/admin.cpp.o: adminsealops.h
 CMakeFiles/admin.dir/admin.cpp.o: generations.h
+CMakeFiles/admin.dir/admin.cpp.o: hazmat.h
+CMakeFiles/admin.dir/admin.cpp.o: randombytes.h
+CMakeFiles/admin.dir/admin.cpp.o: sss.h
+CMakeFiles/admin.dir/admin.cpp.o: tweetnacl.h
 CMakeFiles/admin.dir/admin.cpp.o: /usr/local/include/SEAL-3.4/seal/batchencoder.h
 CMakeFiles/admin.dir/admin.cpp.o: /usr/local/include/SEAL-3.4/seal/biguint.h
 CMakeFiles/admin.dir/admin.cpp.o: /usr/local/include/SEAL-3.4/seal/ciphertext.h

@@ -4,6 +4,8 @@
 #include "seal/seal.h"
 #include "dealwithvotes.h"
 
+using namespace std;
+
 int main(int argc, char*argv[]){
 
   int ncandidates = stoi(argv[1]);
@@ -15,6 +17,9 @@ int main(int argc, char*argv[]){
     cout << "votes vector error initializing!\n";
 
   readvotes(ncandidates, votes);
-  verifypublickey();
-  encryptvote(votes);
+  verifypublickey(voterid);
+  verifyvoterkey(voterid);
+  verifyvotercert(voterid);
+  encryptvote(votes, ncandidates, voterid);
+  signvote(voterid);
 }

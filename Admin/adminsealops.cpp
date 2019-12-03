@@ -7,7 +7,7 @@ void generate_election_keys(){
 
   // Defining the context and parameters for the key generation
   EncryptionParameters parms(scheme_type::BFV);
-  size_t poly_modulus_degree = 4096;
+  size_t poly_modulus_degree = 1024;
   parms.set_poly_modulus_degree(poly_modulus_degree);
   parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
   parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
@@ -31,18 +31,61 @@ void generate_election_keys(){
   secretkeyfile.close();
 
   // Moving the files to the right place
+  system("sudo mkdir ../Proj/Keys");
   system("sudo cp election_public_key.txt ../Proj/Keys");
   system("sudo rm -r election_public_key.txt");
   system("sudo cp election_secret_key.txt ../Proj/Keys");
   system("sudo rm -r election_secret_key.txt");
 }
 
+void breaksecretkey(){
+
+
+  // Setting the parameters for the key load
+  EncryptionParameters parms(scheme_type::BFV);
+  size_t poly_modulus_degree = 1024;
+  parms.set_poly_modulus_degree(poly_modulus_degree);
+  parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
+  parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
+  auto context = SEALContext::Create(parms);
+
+  uint8_t secretkey[10000];
+  sss_Share shares[255];
+  // Getting the secret key from its file
+  ifstream skey;
+  skey.open("../Proj/Keys/election_secret_key.txt", ios::binary);
+  SecretKey election_secret_key;
+  election_secret_key.load(context, skey);
+  skey.close();
+
+  memcpy (&secretkey, &election_secret_key, sizeof(election_secret_key));
+  sss_create_shares(shares, secretkey, 255, 255);
+  system("cd .. && sudo mkdir Proj/Trustees");
+  for(int i=0; i < 255; i = i + 1){
+    ofstream sharefile;
+    string aaa = "sharefile";
+    string txt = ".txt";
+    string mv1 = "sudo mv ";
+    string mv2 = " ../Proj/Trustees";
+    aaa.append(to_string(i + 1));
+    aaa.append(txt);
+
+    sharefile.open(aaa, ofstream::binary);
+    sharefile.write((char*)shares[i], sizeof(shares[i]));
+    sharefile.close();
+
+    mv1.append(aaa);
+    mv1.append(mv2);
+    system(mv1.c_str());
+  }
+
+}
 
 void weight_encryption(int nvoters, int* weights){
 
   // Setting the parameters for the encryption
   EncryptionParameters parms(scheme_type::BFV);
-  size_t poly_modulus_degree = 4096;
+  size_t poly_modulus_degree = 1024;
   parms.set_poly_modulus_degree(poly_modulus_degree);
   parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
   parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));

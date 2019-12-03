@@ -1,5 +1,9 @@
-/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/edit_cache.dir
-/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/Generations.dir
-/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/rebuild_cache.dir
-/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/admin.dir
-/home/gmestre/Desktop/Teste/Homomorphic-Vote-Tally/Admin/CMakeFiles/adminsealops.dir
+/home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/rebuild_cache.dir
+/home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/edit_cache.dir
+/home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/admin.dir
+/home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/adminsealops.dir
+/home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/tweet.dir
+/home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/sss.dir
+/home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/randombytes.dir
+/home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/hazmat.dir
+/home/gmestre/Homomorphic-Vote-Tally/Admin/CMakeFiles/Generations.dir
