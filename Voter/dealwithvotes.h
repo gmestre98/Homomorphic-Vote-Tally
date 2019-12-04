@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <ctime>
 #include "seal/seal.h"
 
 using namespace std;
@@ -10,5 +11,6 @@ string system_listen(string);
 void verifypublickey(int);
 void verifyvotercert(int);
 void verifyvoterkey(int);
-void encryptvote(int*, int, int);
-void signvote(int);
+string timestr(time_t);
+time_t encryptvote(int*, int, int);
+void signvote(int, time_t);

@@ -92,9 +92,16 @@ void verifyvoterkey(int voterid){
   system("sudo rm -r pubkey.pem");
 }
 
+string timestr(time_t t){
+  stringstream strm;
+  strm << t;
+  return strm.str();
+}
 
-void encryptvote(int* votes, int ncandidates, int voterid){
+time_t encryptvote(int* votes, int ncandidates, int voterid){
   string votes_file= to_string(voterid);
+  time_t timefile = time(0);
+  string txt = ".txt";
 
   // Setting the parameters for the encryption
   EncryptionParameters parms(scheme_type::BFV);
@@ -125,30 +132,41 @@ void encryptvote(int* votes, int ncandidates, int voterid){
   encryptor.encrypt(plainvector, encrypted_votes);
 
 
-  votes_file.append("_votes.txt");
+  votes_file.append("_votes_");
+  votes_file.append(timestr(timefile));
+  votes_file.append(txt);
   ofstream votes_f;
   votes_f.open(votes_file, ofstream::binary);
   encrypted_votes.save(votes_f);
   votes_f.close();
 
+  cout << votes_file << "\n";
   // Moving the file to the right place
-  string cp1 = "sudo cp ";
-  string cp2 = " ../Proj/BallotBox";
-  string rm1 = "sudo rm -r ";
-  cp1.append(votes_file);
-  cp1.append(cp2);
-  rm1.append(votes_file);
-  system(cp1.c_str());
-  system(rm1.c_str());
+  string mv1 = "sudo mv ";
+  string mv2 = "_votes_";
+  string mv3 = " ../Proj/BallotBox";
+  mv1.append(to_string(voterid));
+  mv1.append(mv2);
+  mv1.append(timestr(timefile));
+  mv1.append(txt);
+  mv1.append(mv3);
+  cout << mv1 << "\n";
+  system(mv1.c_str());
+  cout << "bananas\n";
+
+  return(timefile);
 }
 
-void signvote(int voterid){
+void signvote(int voterid, time_t time){
   string sign1 = "sudo openssl dgst -sha256 -sign ../Proj/Voters/";
   string sign2 = "/voter-cert.key -out ";
-  string sign3 = "_votes.sha256 ../Proj/BallotBox/";
-  string sign4 = "_votes.txt";
+  string sign3 = "_votes_";
+  string sign4 = ".sha256 ../Proj/BallotBox/";
+  string sign5 = "_votes_";
+  string sign6 = ".txt";
   string mv1 = "sudo mv ";
-  string mv2 = "_votes.sha256 ../Proj/BallotBox/";
+  string mv2 = "_votes_";
+  string mv3 = ".sha256 ../Proj/BallotBox/";
 
 
 
@@ -156,10 +174,16 @@ void signvote(int voterid){
   sign1.append(sign2);
   sign1.append(to_string(voterid));
   sign1.append(sign3);
-  sign1.append(to_string(voterid));
+  sign1.append(timestr(time));
   sign1.append(sign4);
+  sign1.append(to_string(voterid));
+  sign1.append(sign5);
+  sign1.append(timestr(time));
+  sign1.append(sign6);
   system(sign1.c_str());
   mv1.append(to_string(voterid));
   mv1.append(mv2);
+  mv1.append(timestr(time));
+  mv1.append(mv3);
   system(mv1.c_str());
 }

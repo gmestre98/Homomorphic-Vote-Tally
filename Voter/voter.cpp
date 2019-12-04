@@ -11,6 +11,7 @@ int main(int argc, char*argv[]){
   int ncandidates = stoi(argv[1]);
   int voterid = stoi(argv[2]);
   int* votes;
+  time_t votetime;
 
   votes = (int*)malloc(ncandidates*sizeof(int));
   if(votes == NULL)
@@ -20,6 +21,6 @@ int main(int argc, char*argv[]){
   verifypublickey(voterid);
   verifyvoterkey(voterid);
   verifyvotercert(voterid);
-  encryptvote(votes, ncandidates, voterid);
-  signvote(voterid);
+  votetime = encryptvote(votes, ncandidates, voterid);
+  signvote(voterid, votetime);
 }

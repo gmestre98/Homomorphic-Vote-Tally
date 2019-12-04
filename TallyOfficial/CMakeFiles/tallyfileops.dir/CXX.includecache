@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/gmestre/Homomorphic-Vote-Tally/TallyOfficial/tallyfileops.cpp
+tallyfileops.h
+/home/gmestre/Homomorphic-Vote-Tally/TallyOfficial/tallyfileops.h
+
+/home/gmestre/Homomorphic-Vote-Tally/TallyOfficial/tallyfileops.h
+iostream
+-
+string.h
+-
+dirent.h
+-
+

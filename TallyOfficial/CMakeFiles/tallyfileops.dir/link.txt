@@ -1,0 +1,2 @@
+/usr/bin/ar qc libtallyfileops.a  CMakeFiles/tallyfileops.dir/tallyfileops.cpp.o
+/usr/bin/ranlib libtallyfileops.a
