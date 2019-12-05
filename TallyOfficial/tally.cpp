@@ -5,27 +5,27 @@
 
 using namespace std;
 
-int main(void){
+int main(int argc, char*argv[]){
   int sizetxt = 0;
   int sizesha256 = 0;
   char txt[] = ".txt";
   char sha256[] = ".sha256";
-  char** filestxt = (char**)malloc(MAX_VOTES*sizeof(char*));
-  memset(filestxt, 0, sizeof(filestxt));
-  char** fsha256 = (char**)malloc(MAX_VOTES*sizeof(char*));
-  memset(fsha256, 0, sizeof(filestxt));
+  char** filestxt = mallarraystrings(MAX_VOTES, MAX_VOTES, "filestxt array!!");
+  char** fsha256 = mallarraystrings(MAX_VOTES, MAX_VOTES, "sha256 array!!");
+  int validsize = 0;
+  char** validfiles;
+  int nvoters = stoi(argv[1]);
+  int* voterfilter;
+  int valsignsize = 0;
+  int* valsignfiles;
 
-  for(int i=0; i < MAX_VOTES; i++){
-    filestxt[i] = (char*)malloc(MAX_VOTES*sizeof(char));
-    fsha256[i] = (char*)malloc(MAX_VOTES*sizeof(char));
-  }
-
-
+  system("sudo rm -r ../Proj/Tally/BallotBox");
+  system("sudo cp -r ../Proj/BallotBox ../Proj/Tally");
   get_ballot_files(&sizetxt, txt, filestxt);
   get_ballot_files(&sizesha256, sha256, fsha256);
-  //printf("%s\n", filestxt[0]);
-  verifysigns(filestxt, fsha256, sizetxt, sizesha256);
-
+  validfiles = validtxts(filestxt, fsha256, sizetxt, sizesha256, &validsize);
+  voterfilter = voterfiltervalids(validfiles, validsize, nvoters);
+  valsignfiles = verifysign(voterfilter, validsize, validfiles, &valsignsize);
   free(filestxt);
   free(fsha256);
 }

@@ -110,7 +110,26 @@ time_t encryptvote(int* votes, int ncandidates, int voterid){
   parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
   parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
   auto context = SEALContext::Create(parms);
+  string cert1 = "sudo mkdir ../Proj/Tally/Voters/";
+  string certcop1 = "sudo cp ../Proj/Voters/";
+  string certcop2 = "/voter-cert.csr";
+  string certcop3 = " ../Proj/Tally/Voters/";
+  string alt;
+  string certsign = "/signvcert.sha256";
 
+
+  cert1.append(to_string(voterid));
+  system(cert1.c_str());
+  certcop1.append(to_string(voterid));
+  alt = certcop1;
+  certcop1.append(certcop2);
+  certcop1.append(certcop3);
+  certcop1.append(to_string(voterid));
+  alt.append(certsign);
+  alt.append(certcop3);
+  alt.append(to_string(voterid));
+  system(certcop1.c_str());
+  system(alt.c_str());
   // Getting the election public key from the corresponding file
   ifstream pkey;
   pkey.open("../Proj/Keys/election_public_key.txt", ios::binary);
@@ -137,6 +156,7 @@ time_t encryptvote(int* votes, int ncandidates, int voterid){
   votes_file.append(txt);
   ofstream votes_f;
   votes_f.open(votes_file, ofstream::binary);
+  votes_f << voterid << "_" << timestr(timefile) << "\n";
   encrypted_votes.save(votes_f);
   votes_f.close();
 
@@ -150,10 +170,7 @@ time_t encryptvote(int* votes, int ncandidates, int voterid){
   mv1.append(timestr(timefile));
   mv1.append(txt);
   mv1.append(mv3);
-  cout << mv1 << "\n";
   system(mv1.c_str());
-  cout << "bananas\n";
-
   return(timefile);
 }
 
@@ -167,7 +184,6 @@ void signvote(int voterid, time_t time){
   string mv1 = "sudo mv ";
   string mv2 = "_votes_";
   string mv3 = ".sha256 ../Proj/BallotBox/";
-
 
 
   sign1.append(to_string(voterid));

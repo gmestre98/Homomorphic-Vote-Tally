@@ -13,6 +13,7 @@ void generaterootca(){
 void installrootCAtally(){
   system("sudo mkdir ../Proj/Tally");
   system("sudo cp ../Proj/CA/my-ca.crt ../Proj/Tally");
+  system("sudo mkdir ../Proj/Tally/Voters");
 }
 
 void createvoterfolder(int voter){

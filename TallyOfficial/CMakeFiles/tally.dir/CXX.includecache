@@ -19,9 +19,15 @@ seal/seal.h
 /home/gmestre/Homomorphic-Vote-Tally/TallyOfficial/tallyfileops.h
 iostream
 -
+stdio.h
+-
+stdlib.h
+-
 string.h
 -
 dirent.h
+-
+bits/stdc++.h
 -
 
 /usr/local/include/SEAL-3.4/seal/batchencoder.h
