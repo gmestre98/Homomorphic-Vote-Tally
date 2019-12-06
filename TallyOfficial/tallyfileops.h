@@ -3,11 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
+#include <fstream>
+#include "seal/seal.h"
 #include <bits/stdc++.h>
 
 #define MAX_VOTES 200
 
 using namespace std;
+using namespace seal;
 
 char** mallarraystrings(int, int, string);
 char** get_ballot_files(int*, char*, char**);
@@ -16,4 +19,6 @@ char** validtxts(char**, char**, int, int, int*);
 int* voterfiltervalids(char**, int, int);
 string system_listen(string);
 void verifyvotercert(int);
-void verifysign(int*, int, char**);
+char** verifysign(int*, int, char**, int*);
+char** verifycontent(char**, int, int*);
+char** verifytime(char**, int, int);

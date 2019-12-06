@@ -11,5 +11,6 @@ add_library(tallyfileops tallyfileops.cpp)
 add_executable(tally tally.cpp)
 
 find_package(SEAL 3.4 REQUIRED)
+target_link_libraries(tallyfileops SEAL::seal)
 target_link_libraries(tally tallyfileops)
 target_link_libraries(tally SEAL::seal)

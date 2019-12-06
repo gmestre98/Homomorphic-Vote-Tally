@@ -1,6 +1,7 @@
 #include "tallyfileops.h"
 
 using namespace std;
+using namespace seal;
 
 char** mallarraystrings(int n1, int n2, string error){
   char** array1 = (char**)malloc(n1*sizeof(char *));
@@ -144,18 +145,14 @@ void verifyvotercert(int voterid){
 }
 
 
-int* verifysign(int*voterfilter, int validsize, char** validfiles, int* valsignsize){
+char** verifysign(int*voterfilter, int validsize, char** validfiles, int* valsignsize){
   int alfa=0;
   string getpubkey;
   string c1, c2, c3;
-  int *ret=(int *)malloc(validsize*sizeof(int));
-  if(ret == NULL)
-    cout << "ERROR ALLOCATING valsignvotesfile!!\n";
+  char** ret = mallarraystrings(validsize, MAX_VOTES, "signedfiles array");
 
   for(int i=0; i < validsize; i = i + 1){
     string s(validfiles[i]);
-    cout << alfa << "\n";
-    cout << voterfilter[i] << "filtro\n";
     if(alfa != voterfilter[i]){
       alfa = voterfilter[i];
       verifyvotercert(voterfilter[i]);
@@ -171,18 +168,93 @@ int* verifysign(int*voterfilter, int validsize, char** validfiles, int* valsigns
     c1.append(" ../Proj/Tally/BallotBox/");
     c1.append(s);
     c1.append(".txt");
-    if(system_listen(c1) != "Verified OK\n"){
+    if(system_listen(c1) != "Verified OK\n")
       cout << "\nYou have got a voter certificate not signed by the CA!\n";
-      cout << "Program exiting\n";
-      exit(-1);
-    }
     else{
-      ret[*valsignsize] = i;
+      memcpy(ret[*valsignsize], validfiles[i], strlen(validfiles[i])*sizeof(char));
       *valsignsize = *valsignsize + 1;
     }
   }
   return ret;
 }
+
+
+char** verifycontent(char** signfiles, int valsignsize, int* valcontentsize){
+  ifstream file;
+  char** ret = mallarraystrings(valsignsize, MAX_VOTES, "content val array");
+  string a;
+
+  cout << "\n\n\n\n\n";
+  for(int i=0; i < valsignsize; i=i+1){
+    string s(signfiles[i]);
+    string token, token2;
+    string delimiter = "_";
+    size_t pos = 0;
+    file.open(("../Proj/Tally/BallotBox/" + s + ".txt").c_str(), ios::binary);
+    getline(file, a);
+    file.close();
+    while ((pos = s.find(delimiter)) != std::string::npos) {
+        token = s.substr(0, pos);
+        s.erase(0, pos + delimiter.length());
+    }
+    pos=0;
+    while ((pos = a.find(delimiter)) != std::string::npos) {
+        token2 = a.substr(0, pos);
+        a.erase(0, pos + delimiter.length());
+    }
+    if(a == s){
+      memcpy(ret[*valcontentsize], signfiles[i], strlen(signfiles[i])*sizeof(char));
+      cout << ret[*valcontentsize] << "\n";
+      *valcontentsize = *valcontentsize + 1;
+    }
+  }
+  return ret;
+}
+
+
+char** verifytime(char** valcontent, int valcontentsize, int nvoters){
+    char** ret = mallarraystrings(nvoters, MAX_VOTES, "votes final array");
+    string comp;
+
+    for(int i=0; i < nvoters; i = i + 1){
+      comp = "";
+      comp.append(to_string(i + 1));
+      comp.append("_");
+      for(int j=0; j < valcontentsize; j = j + 1){
+        if(strstr(valcontent[j], comp.c_str()) != NULL)
+          memcpy(ret[i], valcontent[j], strlen(valcontent[j])*sizeof(char));
+      }
+    }
+
+    return ret;
+}
+
+
+/*// Setting the parameters for the key load
+EncryptionParameters parms(scheme_type::BFV);
+size_t poly_modulus_degree = 1024;
+parms.set_poly_modulus_degree(poly_modulus_degree);
+parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
+parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
+auto context = SEALContext::Create(parms);
+Ciphertext use;*/
+
+/*use.load(context, file);
+f.open("file.txt", ofstream::binary);
+use.save(f);
+f.close();*/
+/*int* verifytimestamp(char** validfiles, int* voterfilter, int validsize, int* valsignfiles, int valsignsize, int* votesproccesssize){
+
+int *ret=(int *)malloc(validsize*sizeof(int));
+if(ret == NULL)
+  cout << "ERROR ALLOCATING valsignvotesfile!!\n";
+memset(ret, 0, validsize*sizeof(int));
+
+
+
+
+}
+
 /*void verifypublickey(int voterid){
   string c1 = "sudo openssl dgst -sha256 -verify pubkey.pem -signature ../Proj/Voters/";
   string c2 = "/homopublic.sha256 ../Proj/Voters/";

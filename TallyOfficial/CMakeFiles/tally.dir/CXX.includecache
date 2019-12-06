@@ -27,6 +27,10 @@ string.h
 -
 dirent.h
 -
+fstream
+-
+seal/seal.h
+/home/gmestre/Homomorphic-Vote-Tally/TallyOfficial/seal/seal.h
 bits/stdc++.h
 -
 
