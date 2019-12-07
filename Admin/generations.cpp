@@ -1,7 +1,53 @@
+/******************************************************************************
+*
+* File Name: generations.cpp
+* Authors:   Gonçalo Mestre & Carolina Zerbes & Rui Pedro Silva
+* Revision:  07 Dec 2019
+*
+* NAME
+*  adminsealops - Declaration of the functions needed for general admin operations
+* that do not need the SEAL MICROSOFT library
+*
+* DESCRIPTION
+*  Most of the functions declaread on this file are for general verifications
+* that the data needs to be subjected too, but also for folder creations,
+* certififcates and keys creations with openssl and signing documents
+*
+*****************************************************************************/
 #include "generations.h"
 
 using namespace std;
 
+
+/******************************************************************************
+ * isNumber()
+ *
+ * Arguments: string inputed
+ * Returns: boolean true if s is a number and false if not
+ *
+ * Description: This function verifies if the inputed string is a number and
+ *  returns a boolean according to that
+ *
+ *****************************************************************************/
+bool isNumber(string s)
+{
+    for (int i = 0; i < s.length(); i++)
+        if (isdigit(s[i]) == false)
+            return false;
+
+    return true;
+}
+
+/******************************************************************************
+ * generaterootca()
+ *
+ * Arguments: none
+ * Returns: none
+ *
+ * Description: Creates the folder for this election and the CA folder inside it.
+ * This function also creates the key and certificate for the root CA
+ *
+ *****************************************************************************/
 void generaterootca(){
   system("cd .. && sudo rm -r Proj");
   system("cd .. && sudo mkdir Proj");
@@ -10,12 +56,31 @@ void generaterootca(){
   system("cd ../Proj/CA && sudo openssl req -new -x509 -days 3650 -key my-ca.key -out my-ca.crt");
 }
 
+/******************************************************************************
+ * installrootCAtally()
+ *
+ * Arguments: none
+ * Returns: none
+ *
+ * Description: It creates the Tally folder for this election and saves there
+ *  the root CA certificate
+ *
+ *****************************************************************************/
 void installrootCAtally(){
   system("sudo mkdir ../Proj/Tally");
   system("sudo cp ../Proj/CA/my-ca.crt ../Proj/Tally");
   system("sudo mkdir ../Proj/Tally/Voters");
 }
 
+/******************************************************************************
+ * createvoterfolder()
+ *
+ * Arguments: - Voter id
+ * Returns: none
+ *
+ * Description: Creates a folder for the voter with the corresponding voter id
+ *
+ *****************************************************************************/
 void createvoterfolder(int voter){
   string votefolder;
   string command;
@@ -28,6 +93,16 @@ void createvoterfolder(int voter){
   system(command.c_str());
 }
 
+/******************************************************************************
+ * voter_privatekey()
+ *
+ * Arguments: - Voter id
+ * Returns: none
+ *
+ * Description: Creates a private key for the voter with the corresponding voter
+ *  id and also signs the private key with the root CA private key
+ *
+ *****************************************************************************/
 void voter_privatekey(int voter){
   string votefolder;
   string command;
@@ -50,6 +125,17 @@ void voter_privatekey(int voter){
   system(mv1.c_str());
 }
 
+/******************************************************************************
+ * voter_certificate()
+ *
+ * Arguments: - Voter id
+ * Returns: none
+ *
+ * Description: Creates a certificate for the voter with the corresponding voter
+ *  id and also signs the certificate with the root CA private key. The
+ *  certificate is fullfiled automaticaly
+ *
+ *****************************************************************************/
 void voter_certificate(int voter){
   string votefolder;
   string command;
@@ -77,7 +163,16 @@ void voter_certificate(int voter){
   system(mv1.c_str());
 }
 
-
+/******************************************************************************
+ * installvoterrootCA()
+ *
+ * Arguments: - Voter id
+ * Returns: none
+ *
+ * Description: Copies the root CA certificate to the folder of the voter with
+ *  the corresponding voter id
+ *
+ *****************************************************************************/
 void installvoterrootCA(int voter){
   string command;
 
@@ -86,6 +181,16 @@ void installvoterrootCA(int voter){
   system(command.c_str());
 }
 
+/******************************************************************************
+ * install_election_public_key()
+ *
+ * Arguments: - Voter id
+ * Returns: none
+ *
+ * Description: Copies the election public key to the folder of the voter with
+ *  the corresponding voter id and also signs this election public key file
+ *
+ *****************************************************************************/
 void install_election_public_key(int voter){
   string command;
   string sign1 = "sudo openssl dgst -sha256 -sign ../Proj/CA/my-ca.key -out homopublic.sha256 ../Proj/Voters/";
@@ -102,7 +207,34 @@ void install_election_public_key(int voter){
   system(mv1.c_str());
 }
 
+/******************************************************************************
+ * votertallyfolder()
+ *
+ * Arguments: - Voter id
+ * Returns: none
+ *
+ * Description: Creates a folder for the voter with the correpsonding voter id
+ *  on the voter tally folder
+ *
+ *****************************************************************************/
+void votertallyfolder(int voterid){
+  string cert1 = "sudo mkdir ../Proj/Tally/Voters/";
 
+  cert1.append(to_string(voterid + 1));
+  system(cert1.c_str());
+}
+
+/******************************************************************************
+ * weight_assign()
+ *
+ * Arguments: - Voter id
+ *            - Weights vector with the weight for the votes of each voter
+ * Returns: none
+ *
+ * Description: Asks the user to introduce a number between 1 and 100 for then
+ *  weight of each voter on this election
+ *
+ *****************************************************************************/
 void weight_assign(int nvoters, int *weights){
   string a;
 
@@ -115,8 +247,17 @@ void weight_assign(int nvoters, int *weights){
   }
 }
 
-
-void setlastfolders(int nvoters){
+/******************************************************************************
+ * setlastfolders()
+ *
+ * Arguments: - Number of voters
+ * Returns: none
+ *
+ * Description: Creates a folder inside the election folder with the Ballot Box
+ *  where each vote and the corresponding signature is going to
+ *
+ *****************************************************************************/
+void setlastfolders(){
   // Create Ballot Box
   system("sudo mkdir ../Proj/BallotBox");
 }

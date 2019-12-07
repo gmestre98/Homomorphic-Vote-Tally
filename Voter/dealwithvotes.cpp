@@ -1,8 +1,52 @@
+/******************************************************************************
+*
+* File Name: dealwithvotes.cpp
+* Authors:   Gonçalo Mestre & Carolina Zerbes & Rui Pedro Silva
+* Revision:  07 Dec 2019
+*
+* NAME
+*  dealwithvotes - Declaration of the functions needed for general voter ops
+*
+* DESCRIPTION
+*  Most of the functions declaread on this file are for general verifications
+* that the data needs to be subjected too, but also for folder creations, signing
+* documents and encrypting the vote.
+*
+*****************************************************************************/
 #include "dealwithvotes.h"
 
 using namespace std;
 using namespace seal;
 
+/******************************************************************************
+ * isNumber()
+ *
+ * Arguments: string inputed
+ * Returns: boolean true if s is a number and false if not
+ *
+ * Description: This function verifies if the inputed string is a number and
+ *  returns a boolean according to that
+ *
+ *****************************************************************************/
+bool isNumber(string s)
+{
+    for (int i = 0; i < s.length(); i++)
+        if (isdigit(s[i]) == false)
+            return false;
+
+    return true;
+}
+
+/******************************************************************************
+ * readvotes()
+ *
+ * Arguments: - Number of candidates on this election
+ *            - Array of integers with the votes of this voter on each candidate
+ * Returns: none
+ *
+ * Description: This function asks the voter to input his or hers vote intentions
+ *
+ *****************************************************************************/
 void readvotes(int ncandidates, int* votes){
   string a;
 
@@ -19,6 +63,16 @@ void readvotes(int ncandidates, int* votes){
   }
 }
 
+/******************************************************************************
+ * system_listen()
+ *
+ * Arguments: - Terminal command line to be executed
+ * Returns: String with the terminal response for the executed command
+ *
+ * Description: This function executes a system call and returns the system call
+ *  answer
+ *
+ *****************************************************************************/
 string system_listen(string cmd){
     string data;
     FILE *stream;
@@ -27,19 +81,26 @@ string system_listen(string cmd){
 
     stream = popen(cmd.c_str(), "r");
 
-    if (stream)
-    {
-      while(!feof(stream))
-      {
-        if (fgets(buffer, max_buffer, stream) != NULL) data.append(buffer);
+    if (stream){
+      while(!feof(stream)){
+        if (fgets(buffer, max_buffer, stream) != NULL)
+          data.append(buffer);
       }
-
       pclose(stream);
     }
-
     return data;
 }
 
+/******************************************************************************
+ * verifypublickey()
+ *
+ * Arguments: - Voter id
+ * Returns: none
+ *
+ * Description: This function verifies if the given election public key is
+ *  signed by the root CA, if not the program exits.
+ *
+ *****************************************************************************/
 void verifypublickey(int voterid){
   string c1 = "sudo openssl dgst -sha256 -verify pubkey.pem -signature ../Proj/Voters/";
   string c2 = "/homopublic.sha256 ../Proj/Voters/";
@@ -58,6 +119,16 @@ void verifypublickey(int voterid){
 }
 
 
+/******************************************************************************
+ * verifyvotercert()
+ *
+ * Arguments: - Voter id
+ * Returns: none
+ *
+ * Description: This function verifies if the given voter certificate for this
+ *  voter is signed by the root CA, if not the program exits.
+ *
+ *****************************************************************************/
 void verifyvotercert(int voterid){
   string c1 = "sudo openssl dgst -sha256 -verify pubkey.pem -signature ../Proj/Voters/";
   string c2 = "/signvcert.sha256 ../Proj/Voters/";
@@ -75,6 +146,16 @@ void verifyvotercert(int voterid){
   system("sudo rm -r pubkey.pem");
 }
 
+/******************************************************************************
+ * verifyvoterkey()
+ *
+ * Arguments: - Voter id
+ * Returns: none
+ *
+ * Description: This function verifies if the given voter private key for this
+ *  voter is signed by the root CA, if not the program exits.
+ *
+ *****************************************************************************/
 void verifyvoterkey(int voterid){
   string c1 = "sudo openssl dgst -sha256 -verify pubkey.pem -signature ../Proj/Voters/";
   string c2 = "/signvkey.sha256 ../Proj/Voters/";
@@ -92,34 +173,38 @@ void verifyvoterkey(int voterid){
   system("sudo rm -r pubkey.pem");
 }
 
+/******************************************************************************
+ * timestr()
+ *
+ * Arguments: - A timestamp
+ * Returns: String with the timestamp
+ *
+ * Description: This function converts a given timestamp to string
+ *
+ *****************************************************************************/
 string timestr(time_t t){
   stringstream strm;
   strm << t;
   return strm.str();
 }
 
-time_t encryptvote(int* votes, int ncandidates, int voterid){
-  string votes_file= to_string(voterid);
-  time_t timefile = time(0);
-  string txt = ".txt";
-
-  // Setting the parameters for the encryption
-  EncryptionParameters parms(scheme_type::BFV);
-  size_t poly_modulus_degree = 1024;
-  parms.set_poly_modulus_degree(poly_modulus_degree);
-  parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
-  parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
-  auto context = SEALContext::Create(parms);
-  string cert1 = "sudo mkdir ../Proj/Tally/Voters/";
+/******************************************************************************
+ * givecertstotally()
+ *
+ * Arguments: - Voter id
+ * Returns: none
+ *
+ * Description: This function gives a voter certificarte and the corresponding
+ *  signed file to the Tally Official
+ *
+ *****************************************************************************/
+void givecertstotally(int voterid){
   string certcop1 = "sudo cp ../Proj/Voters/";
   string certcop2 = "/voter-cert.csr";
   string certcop3 = " ../Proj/Tally/Voters/";
   string alt;
   string certsign = "/signvcert.sha256";
 
-
-  cert1.append(to_string(voterid));
-  system(cert1.c_str());
   certcop1.append(to_string(voterid));
   alt = certcop1;
   certcop1.append(certcop2);
@@ -130,6 +215,33 @@ time_t encryptvote(int* votes, int ncandidates, int voterid){
   alt.append(to_string(voterid));
   system(certcop1.c_str());
   system(alt.c_str());
+}
+
+/******************************************************************************
+ * encryptvote()
+ *
+ * Arguments: - Array of integers with the votes of this voter on each candidate
+ *            - Number of candidates on this election
+ *            - Voter id
+ * Returns: Timestamp of the voter
+ *
+ * Description: This function encrypts the vote and puts the encrypted vote on a
+ *  file and then the file on Ballot Box
+ *
+ *****************************************************************************/
+time_t encryptvote(int* votes, int ncandidates, int voterid){
+  string votes_file= to_string(voterid);
+  time_t timefile = time(0);
+  string txt = ".txt";
+
+  // Setting the parameters for the encryption
+  EncryptionParameters parms(scheme_type::BFV);
+  size_t poly_modulus_degree = 8192;
+  parms.set_poly_modulus_degree(poly_modulus_degree);
+  parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
+  parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
+  auto context = SEALContext::Create(parms);
+
   // Getting the election public key from the corresponding file
   ifstream pkey;
   pkey.open("../Proj/Keys/election_public_key.txt", ios::binary);
@@ -150,7 +262,7 @@ time_t encryptvote(int* votes, int ncandidates, int voterid){
   batch_encoder.encode(votes_matrix, plainvector);
   encryptor.encrypt(plainvector, encrypted_votes);
 
-
+  // Creating the file to store the encrypted vote
   votes_file.append("_votes_");
   votes_file.append(timestr(timefile));
   votes_file.append(txt);
@@ -174,6 +286,17 @@ time_t encryptvote(int* votes, int ncandidates, int voterid){
   return(timefile);
 }
 
+/******************************************************************************
+ * signvote()
+ *
+ * Arguments: - Voter id
+ *            - Vote timestamp
+ * Returns: none
+ *
+ * Description: This function signs the file with the encrypted vote and puts
+ *  the signature file on the Ballot Box
+ *
+ *****************************************************************************/
 void signvote(int voterid, time_t time){
   string sign1 = "sudo openssl dgst -sha256 -sign ../Proj/Voters/";
   string sign2 = "/voter-cert.key -out ";

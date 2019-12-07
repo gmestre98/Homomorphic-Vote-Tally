@@ -1,17 +1,23 @@
+/******************************************************************************
+*
+* File Name: adminsealops.h
+* Authors:   Gonçalo Mestre & Carolina Zerbes & Rui Pedro Silva
+* Revision:  07 Dec 2019
+*
+* NAME
+*  adminsealops - Header file for the adminsealops.cpp
+*
+* DESCRIPTION
+* This file is just an header file for the adminsealops.cpp, with just the
+* necessary declarations and includes
+*
+*****************************************************************************/
 #include <cstddef>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
 #include <vector>
 #include <string>
-#include <chrono>
-#include <random>
-#include <thread>
-#include <mutex>
-#include <memory>
-#include <limits>
-#include <algorithm>
-#include <numeric>
 #include "seal/seal.h"
 extern "C" {
   #include "sss.h"
@@ -19,8 +25,6 @@ extern "C" {
   #include <assert.h>
   #include <string.h>
 }
-
-
 
 void generate_election_keys();
 void breaksecretkey();

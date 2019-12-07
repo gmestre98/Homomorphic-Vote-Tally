@@ -1,13 +1,40 @@
+/******************************************************************************
+*
+* File Name: adminsealops.cpp
+* Authors:   Gonçalo Mestre & Carolina Zerbes & Rui Pedro Silva
+* Revision:  07 Dec 2019
+*
+* NAME
+*  adminsealops - Declaration of the functions needed for the admin operations
+* that have operations using the SEAL MICROSOFT library.
+*
+* DESCRIPTION
+*  This file implements important functions for the election system, including
+* the generation of the election keys, the creation of the trustees and the
+* encryption of the vector of the voters weights
+*
+*****************************************************************************/
 #include "adminsealops.h"
 
 using namespace std;
 using namespace seal;
 
-void generate_election_keys(){
 
+/******************************************************************************
+ * generate_election_keys()
+ *
+ * Arguments: none
+ * Returns: none
+ *
+ * Description: Generates the chosen context and the keys for this context.
+ *  Then this saves the generated keys to the corresponding files and puts each
+ *  file in the right place.
+ *
+ *****************************************************************************/
+void generate_election_keys(){
   // Defining the context and parameters for the key generation
   EncryptionParameters parms(scheme_type::BFV);
-  size_t poly_modulus_degree = 1024;
+  size_t poly_modulus_degree = 8192;
   parms.set_poly_modulus_degree(poly_modulus_degree);
   parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
   parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
@@ -38,12 +65,21 @@ void generate_election_keys(){
   system("sudo rm -r election_secret_key.txt");
 }
 
+/******************************************************************************
+ * breaksecretkey()
+ *
+ * Arguments: none
+ * Returns: none
+ *
+ * Description: MEXE NESTA BONZAS USAR O SHAMIR
+ * GERAR CHAVE SIMETRICA, NAO PODE TER MAIS DE 64 BYTES, USAR OPENSSL
+ * SABER COMO ENCRIPTAR COM ESTA CHAVE E DESENCRIPTAR
+ *
+ *****************************************************************************/
 void breaksecretkey(){
-
-
   // Setting the parameters for the key load
   EncryptionParameters parms(scheme_type::BFV);
-  size_t poly_modulus_degree = 1024;
+  size_t poly_modulus_degree = 8192;
   parms.set_poly_modulus_degree(poly_modulus_degree);
   parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
   parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
@@ -81,11 +117,22 @@ void breaksecretkey(){
 
 }
 
-void weight_encryption(int nvoters, int* weights){
 
+/******************************************************************************
+ * weight_encryption()
+ *
+ * Arguments: - The number of voters on this election
+ *            - Array of integers with the weights for each voter
+ * Returns: none
+ *
+ * Description: Encrypts the weights array and saves the encrypted data in a
+ *  file, then saves the file on the right place
+ *
+ *****************************************************************************/
+void weight_encryption(int nvoters, int* weights){
   // Setting the parameters for the encryption
   EncryptionParameters parms(scheme_type::BFV);
-  size_t poly_modulus_degree = 1024;
+  size_t poly_modulus_degree = 8192;
   parms.set_poly_modulus_degree(poly_modulus_degree);
   parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
   parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
@@ -107,13 +154,13 @@ void weight_encryption(int nvoters, int* weights){
   size_t slot_count = batch_encoder.slot_count();
   vector<uint64_t> pod_matrix(slot_count, 0ULL);
 
-  for(int i=0; i < nvoters; i = i + 1){
+  // Casting the weights to a vector of the necessary type
+  for(int i=0; i < nvoters; i = i + 1)
     pod_matrix[i] = (uint64_t) weights[i];
-  }
 
+  // Encoding, encrypting and save the data to a file
   batch_encoder.encode(pod_matrix, plainvector);
   encryptor.encrypt(plainvector, encrypted_matrix);
-
   ofstream weights_file;
   weights_file.open("weights_file.txt", ofstream::binary);
   encrypted_matrix.save(weights_file);
