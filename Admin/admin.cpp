@@ -73,4 +73,5 @@ int main(int argc, char *argv[]){
   weight_encryption(nvoters, weights);
   setlastfolders();
   installtallykeys();
+  installrootCAcounter();
 }

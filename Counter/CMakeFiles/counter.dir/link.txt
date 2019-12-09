@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/counter.dir/counter.cpp.o  -o counter libcounterops.a /usr/local/lib/libseal-3.4.a -pthread /usr/lib/x86_64-linux-gnu/libz.so libsss.a libhazmat.a libtweet.a librandombytes.a 

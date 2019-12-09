@@ -77,8 +77,8 @@ void generate_election_keys(){
 }
 
 void generate_symetric_key(){
-  string generatekey = "sudo openssl enc -nosalt -aes-256-cbc -k symetrickeycsc -P > symmetric_key.txt";
-  string encrypt = "sudo openssl enc -aes-256-cbc -kfile symmetric_key.txt -in ../Proj/Keys/election_secret_key.txt -out ../Proj/Keys/election_secret_key.txt.enc";
+  string generatekey = "sudo openssl enc -nosalt -aes-256-cbc -k symetrickeycsc -pbkdf2 -P > symmetric_key.txt";
+  string encrypt = "sudo openssl enc -aes-256-cbc -pbkdf2 -kfile symmetric_key.txt -in ../Proj/Keys/election_secret_key.txt -out ../Proj/Keys/election_secret_key.enc";
   string symmetricKeyFile = "symmetric_key.txt";
   char buf[100]={0};
 
@@ -120,8 +120,9 @@ void breaksecretkey(){
   auto context = SEALContext::Create(parms);
   string buf;
 
-  uint8_t message[sss_MLEN];
-  sss_Share shares[5];
+  uint8_t message[sss_MLEN], restored[sss_MLEN];
+  sss_Share shares[2];
+  int tmp;
   // Getting the secret key from its file
   ifstream skey;
   skey.open("symmetric_key.txt");
@@ -130,9 +131,10 @@ void breaksecretkey(){
 
   generate_symetric_key();
   memcpy (&message, &buf, sizeof(buf));
-  sss_create_shares(shares, message, 5, 4);
+  sss_create_shares(shares, message, 2, 2);
   system("cd .. && sudo mkdir Proj/Trustees");
-  for(int i=0; i < 5; i = i + 1){
+  system("sudo mv ../Proj/Keys/election_secret_key.enc ../Proj/Trustees");
+  for(int i=0; i < 2; i = i + 1){
     ofstream sharefile;
     string aaa = "sharefile";
     string txt = ".txt";
@@ -148,9 +150,13 @@ void breaksecretkey(){
     mv1.append(aaa);
     mv1.append(mv2);
     system(mv1.c_str());
+    system(("sudo openssl dgst -sha256 -sign ../Proj/CA/my-ca.key -out ../Proj/Trustees/sharefile" + to_string(i+1) + ".sha256 ../Proj/Trustees/sharefile" + to_string(i+1) + ".txt").c_str());
   }
   system("sudo mv symmetric_key.txt ../Proj/Keys");
-
+  system("sudo openssl dgst -sha256 -sign ../Proj/CA/my-ca.key -out ../Proj/Trustees/election_secret_key.sha256 ../Proj/Trustees/election_secret_key.enc");
+	tmp = sss_combine_shares(restored, shares, 2);
+	assert(tmp == 0);
+	assert(memcmp(restored, message, sss_MLEN) == 0);
 }
 
 

@@ -281,3 +281,19 @@ void installtallykeys(){
   system("sudo mv relin.sha256 ../Proj/Tally");
   system("sudo mv galois.sha256 ../Proj/Tally");
 }
+
+
+/******************************************************************************
+ * installrootCAtally()
+ *
+ * Arguments: none
+ * Returns: none
+ *
+ * Description: It creates the Tally folder for this election and saves there
+ *  the root CA certificate
+ *
+ *****************************************************************************/
+void installrootCAcounter(){
+  system("sudo mkdir ../Proj/Counter");
+  system("sudo cp ../Proj/CA/my-ca.crt ../Proj/Counter");
+}

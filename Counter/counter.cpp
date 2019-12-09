@@ -1,6 +1,8 @@
 #include <iostream>
-#include "seal/seal.h"
+#include "counterops.h"
 
 int main(int argc, char*argv[]){
-  
+
+  verifytrustees();
+  rebuildkey();
 }

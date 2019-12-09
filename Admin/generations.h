@@ -30,3 +30,4 @@ void votertallyfolder(int);
 void weight_assign(int, int*);
 void setlastfolders();
 void installtallykeys();
+void installrootCAcounter();
