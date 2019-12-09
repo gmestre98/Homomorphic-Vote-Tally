@@ -72,4 +72,5 @@ int main(int argc, char *argv[]){
   weight_assign(nvoters, weights);
   weight_encryption(nvoters, weights);
   setlastfolders();
+  installtallykeys();
 }

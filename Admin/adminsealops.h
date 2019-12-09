@@ -27,5 +27,6 @@ extern "C" {
 }
 
 void generate_election_keys();
+void generate_symetric_key();
 void breaksecretkey();
 void weight_encryption(int, int*);

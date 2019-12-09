@@ -312,7 +312,7 @@ char** verifysign(int*voterfilter, int validsize, char** validfiles, int* valsig
 }
 
 /******************************************************************************
- * verifysign()
+ * verifycontent()
  *
  * Arguments: - Array of strings with the valid signed files
  *            - Size of the array of strings with the valid signed files
@@ -336,8 +336,17 @@ char** verifycontent(char** signfiles, int valsignsize, int* valcontentsize){
     string token, token2;
     string delimiter = "_";
     size_t pos = 0;
+    // Setting the parameters for the key load
+    EncryptionParameters parms(scheme_type::BFV);
+    size_t poly_modulus_degree = 8192;
+    parms.set_poly_modulus_degree(poly_modulus_degree);
+    parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
+    parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
+    auto context = SEALContext::Create(parms);
+    Ciphertext enc_vote;
     file.open(("../Proj/Tally/BallotBox/" + s + ".txt").c_str(), ios::binary);
     getline(file, a);
+    enc_vote.load(context, file);
     file.close();
     while ((pos = s.find(delimiter)) != std::string::npos) {
         token = s.substr(0, pos);
@@ -353,9 +362,15 @@ char** verifycontent(char** signfiles, int valsignsize, int* valcontentsize){
       cout << ret[*valcontentsize] << "\n";
       *valcontentsize = *valcontentsize + 1;
     }
+    ofstream errfile;
+    string alfa(signfiles[i]);
+    errfile.open((alfa + ".err").c_str(), ofstream::binary);
+    enc_vote.save(errfile);
+    errfile.close();
   }
   return ret;
 }
+
 
 /******************************************************************************
  * verifytime()
@@ -371,11 +386,13 @@ char** verifycontent(char** signfiles, int valsignsize, int* valcontentsize){
  *  the vote itself validated.
  *
  *****************************************************************************/
+
 char** verifytime(char** valcontent, int valcontentsize, int nvoters){
     char** ret = mallarraystrings(nvoters, MAX_VOTES, "votes final array");
     string comp;
 
     for(int i=0; i < nvoters; i = i + 1){
+      ret[i][0] = 0;
       comp = "";
       comp.append(to_string(i + 1));
       comp.append("_");
@@ -388,46 +405,205 @@ char** verifytime(char** valcontent, int valcontentsize, int nvoters){
     return ret;
 }
 
+/******************************************************************************
+ * verifykeyssigns()
+ *
+ * Arguments: none
+ * Returns: none
+ *
+ * Description: This function verifies the signature of the homomorphic relin
+ *  keys and galois keys necessary for the homomorphic computations to be made
+ *  on the encrypted data
+ *
+ *****************************************************************************/
+ void verifykeyssigns(){
+   string c1 = "sudo openssl dgst -sha256 -verify pubkey.pem -signature ../Proj/Tally/relin.sha256 ../Proj/Tally/relin_keys.txt";
+   string c2 = "sudo openssl dgst -sha256 -verify pubkey.pem -signature ../Proj/Tally/galois.sha256 ../Proj/Tally/galois_keys.txt";
 
-/*// Setting the parameters for the key load
-EncryptionParameters parms(scheme_type::BFV);
-size_t poly_modulus_degree = 1024;
-parms.set_poly_modulus_degree(poly_modulus_degree);
-parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
-parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
-auto context = SEALContext::Create(parms);
-Ciphertext use;*/
+   system("sudo openssl x509 -pubkey -noout -in ../Proj/Tally/my-ca.crt > pubkey.pem");
+   if(system_listen(c1) != "Verified OK\n"){
+     cout << "\nYou have got your relin keys not signed by the CA!\n";
+     cout << "Program exiting\n";
+     exit(-1);
+   }
+   if(system_listen(c2) != "Verified OK\n"){
+     cout << "\nYou have got your galois keys not signed by the CA!\n";
+     cout << "Program exiting\n";
+     exit(-1);
+   }
+   system("sudo rm -r pubkey.pem");
+ }
 
-/*use.load(context, file);
-f.open("file.txt", ofstream::binary);
-use.save(f);
-f.close();*/
-/*int* verifytimestamp(char** validfiles, int* voterfilter, int validsize, int* valsignfiles, int valsignsize, int* votesproccesssize){
+/******************************************************************************
+* checksumvote()
+*
+* Arguments: - String with the name of the file with the vote for voter if
+             - Array that is going to be filled with 0 for the voters that didnt
+             participate in the election and 1 for the others
+             - Voter id - 1
+             - Number of candidates for this election
+* Returns: none
+*
+* Description: This function computes the checksum of the votes for each voter
+*   using rotations and sums on the encrypted data, then it saves the encrypted
+*   checksums on the counter folder
+*
+******************************************************************************/
+void checksumvote(char* votename, int* votes, int voter, int ncandidates){
+  if(votename[0] == 0){
+    votes[voter] = 0;
+    return;
+  }
+  else{
+    votes[voter] = 1;
+    // Setting the parameters for the key load
+    EncryptionParameters parms(scheme_type::BFV);
+    size_t poly_modulus_degree = 8192;
+    parms.set_poly_modulus_degree(poly_modulus_degree);
+    parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
+    parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
+    auto context = SEALContext::Create(parms);
+    RelinKeys relin_keys;
+    GaloisKeys galois_keys;
+    ifstream relfile, galfile, votefile;
+    Ciphertext enc_vote;
+    string s(votename);
+    string a;
+    Evaluator evaluator(context);
+    Ciphertext *aux = (Ciphertext *)malloc(ncandidates*sizeof(Ciphertext));
+    if(aux == NULL){
+      cout << "Here there is a serious error on alocating the aux holy graal\n";
+      exit(-1);
+    }
 
-int *ret=(int *)malloc(validsize*sizeof(int));
-if(ret == NULL)
-  cout << "ERROR ALLOCATING valsignvotesfile!!\n";
-memset(ret, 0, validsize*sizeof(int));
+    // Getting the relin keys and galois keys
+    relfile.open("../Proj/Tally/relin_keys.txt", ios::binary);
+    relin_keys.load(context, relfile);
+    relfile.close();
+    galfile.open("../Proj/Tally/galois_keys.txt", ios::binary);
+    galois_keys.load(context, galfile);
+    galfile.close();
+    // Getting the encrypted vote to be processed
+    cout << s + ".err" << "\n";
+    votefile.open((s + ".err").c_str(), ofstream::binary);
+    enc_vote.load(context, votefile);
+    votefile.close();
 
+    // Here is where magic will happen thanks to rotations and sums
+    for(int i=0; i < ncandidates; i = i + 1)
+      memcpy(&(aux[i]), &enc_vote, sizeof(Ciphertext));
+    for(int i=1; i < ncandidates; i = i + 1){
+      evaluator.rotate_rows_inplace(aux[i], i ,galois_keys);
+      evaluator.add_inplace(aux[0], aux[i]);
+    }
 
-
-
+    // Now let's save the checksum for this voter on a file
+    ofstream mostimportantfileever;
+    mostimportantfileever.open(("Voter" + to_string(voter+1) + ".txt").c_str(), ofstream::binary);
+    (aux[0]).save(mostimportantfileever);
+    mostimportantfileever.close();
+    free(aux);
+    system(("sudo mv Voter" + to_string(voter + 1) + ".txt ../Proj/Counter").c_str());
+  }
 }
 
-/*void verifypublickey(int voterid){
-  string c1 = "sudo openssl dgst -sha256 -verify pubkey.pem -signature ../Proj/Voters/";
-  string c2 = "/homopublic.sha256 ../Proj/Voters/";
-  string c3 = "/election_public_key.txt";
-  c1.append(to_string(voterid));
-  c1.append(c2);
-  c1.append(to_string(voterid));
-  c1.append(c3);
-  system("sudo openssl x509 -pubkey -noout -in ../Proj/CA/my-ca.crt > pubkey.pem");
-  if(system_listen(c1) != "Verified OK\n"){
-    cout << "\n You have got an election public key not signed by the CA!\n";
-    cout << "Program exiting\n";
-    exit(-1);
+/******************************************************************************
+* verifyweightfiles()
+*
+* Arguments: none
+* Returns: none
+*
+* Description: This function computes the checksum of the votes for each voter
+*   using rotations and sums on the encrypted data, then it saves the encrypted
+*   checksums on the counter folder
+*
+******************************************************************************/
+void verifyweightfiles(int nvoters){
+  string c1;
+  ifstream f;
+
+
+  system("sudo openssl x509 -pubkey -noout -in ../Proj/Tally/my-ca.crt > pubkey.pem");
+  for(int i=0; i < nvoters; i = i + 1){
+    c1 = "sudo openssl dgst -sha256 -verify pubkey.pem -signature ../Proj/Tally/" + to_string(i + 1) + "_weights.sha256 ../Proj/Tally/" + to_string(i + 1) + "_weights.txt";
+
+    if(system_listen(c1) != "Verified OK\n"){
+      cout << "\nYou have got your relin keys not signed by the CA!\n";
+      cout << "Program exiting\n";
+      exit(-1);
+    }
+    f.open(("../Proj/Tally/" + to_string(i+1) + "_weights.txt").c_str(), ios::binary);
+    getline(f, c1);
+    f.close();
+    if(c1 != to_string(i+1)){
+      cout << "Someone has been tampering with the weight files, abort mission!\n";
+      exit(-1);
+    }
   }
   system("sudo rm -r pubkey.pem");
 }
-*/
+
+/******************************************************************************
+* electionresults()
+*
+* Arguments: none
+* Returns: none
+*
+* Description: This function computes the checksum of the votes for each voter
+*   using rotations and sums on the encrypted data, then it saves the encrypted
+*   checksums on the counter folder
+*
+******************************************************************************/
+void electionresults(char **votesfinal, int* electionvotes, int nvoters){
+  int startpoint = 0;
+  // Setting the parameters for the key load
+  EncryptionParameters parms(scheme_type::BFV);
+  size_t poly_modulus_degree = 8192;
+  parms.set_poly_modulus_degree(poly_modulus_degree);
+  parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
+  parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
+  auto context = SEALContext::Create(parms);
+  Evaluator evaluator(context);
+  ifstream file;
+  Ciphertext result, weight, aux;
+  ofstream f;
+  string a;
+
+  while(startpoint < nvoters  &&  electionvotes[startpoint] == 0)
+    startpoint = startpoint + 1;
+
+  if(startpoint == nvoters)
+    return;
+
+
+  string s(votesfinal[startpoint]);
+  file.open((s + ".err").c_str(), ofstream::binary);
+  result.load(context, file);
+  file.close();
+  file.open(("../Proj/Tally/" + to_string(startpoint+1) + "_weights.txt").c_str(), ios::binary);
+  getline(file, a);
+  weight.load(context, file);
+  file.close();
+  evaluator.multiply_inplace(result, weight);
+  for(int i=startpoint+1; i < nvoters; i=i+1){
+    if(electionvotes[i] == 0)
+      continue;
+    else{
+      string s2(votesfinal[i]);
+      file.open((s2 + ".err").c_str(), ofstream::binary);
+      aux.load(context, file);
+      file.close();
+      file.open(("../Proj/Tally/" + to_string(i+1) + "_weights.txt").c_str(), ios::binary);
+      file.open(("../Proj/Tally/" + to_string(i+1) + "_weights.txt").c_str(), ios::binary);
+      weight.load(context, file);
+      file.close();
+      evaluator.multiply_inplace(aux, weight);
+      evaluator.add_inplace(result, aux);
+    }
+  }
+  f.open("results.txt", ofstream::binary);
+  result.save(f);
+  f.close();
+
+  system("sudo mv results.txt ../Proj/Counter");
+}

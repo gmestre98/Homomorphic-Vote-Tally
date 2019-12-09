@@ -261,3 +261,23 @@ void setlastfolders(){
   // Create Ballot Box
   system("sudo mkdir ../Proj/BallotBox");
 }
+
+
+/******************************************************************************
+ * installtallykeys()
+ *
+ * Arguments: none
+ * Returns: none
+ *
+ * Description: This function signs the files with the relin keys and the galois
+ *  keys and installs both the files and the signatures on the tally folder
+ *
+ *****************************************************************************/
+void installtallykeys(){
+  system("sudo cp ../Proj/Keys/relin_keys.txt ../Proj/Tally");
+  system("sudo cp ../Proj/Keys/galois_keys.txt ../Proj/Tally");
+  system("sudo openssl dgst -sha256 -sign ../Proj/CA/my-ca.key -out relin.sha256 ../Proj/Tally/relin_keys.txt");
+  system("sudo openssl dgst -sha256 -sign ../Proj/CA/my-ca.key -out galois.sha256 ../Proj/Tally/galois_keys.txt");
+  system("sudo mv relin.sha256 ../Proj/Tally");
+  system("sudo mv galois.sha256 ../Proj/Tally");
+}

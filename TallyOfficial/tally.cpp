@@ -29,8 +29,6 @@ int main(int argc, char*argv[]){
   char** fsha256 = mallarraystrings(MAX_VOTES, MAX_VOTES, "sha256 array!!");
   int validsize = 0;
   char** validfiles;
-  string s(argv[1]);
-  string s(argv[2]);
   int nvoters, ncandidates;
   int* voterfilter;
   char** signfiles;
@@ -38,13 +36,16 @@ int main(int argc, char*argv[]){
   char** valcontent;
   int valcontentsize = 0;
   char** votesfinal;
+  int* electionvotes;
 
   if(argc < 3){
       cout << "Introduce as an argument the number of voters and the number of";
       cout << " candidates for the program to run!\n";
       exit(-1);
     }
-  else if(!isNumber(s1) || !isNumber(s2)){
+  string s1(argv[1]);
+  string s2(argv[2]);
+  if(!isNumber(s1) || !isNumber(s2)){
     cout << "Introduce numbers and nothing else as an argument!\n";
     exit(-1);
   }
@@ -54,7 +55,11 @@ int main(int argc, char*argv[]){
   }
   nvoters = stoi(argv[1]);
   ncandidates = stoi(argv[2]);
-
+  electionvotes = (int*)malloc(nvoters*sizeof(int));
+  if(electionvotes == NULL){
+    cout << "ERROR ALLOCATING INT ARRAY!\n";
+    exit(-1);
+  }
 
   system("sudo rm -r ../Proj/Tally/BallotBox");
   system("sudo cp -r ../Proj/BallotBox ../Proj/Tally");
@@ -78,7 +83,13 @@ int main(int argc, char*argv[]){
     free(signfiles[i]);
   free(signfiles);
   votesfinal = verifytime(valcontent, valcontentsize, nvoters);
-  for(int i=0; i < nvoters; i= i + 1)
-    cout << votesfinal[i] << "\n";
+  for(int i=0; i < nvoters; i = i + 1)
+    cout << "oi" << votesfinal[i] << "\n";
+  verifykeyssigns();
+  system("sudo mkdir ../Proj/Counter");
+  for(int i=0; i < nvoters; i = i + 1)
+    checksumvote(votesfinal[i], electionvotes, i, ncandidates);
 
+  verifyweightfiles(nvoters);
+  electionresults(votesfinal, electionvotes, nvoters);
 }

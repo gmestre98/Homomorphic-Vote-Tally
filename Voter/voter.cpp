@@ -28,15 +28,15 @@ int main(int argc, char*argv[]){
   int ncandidates, voterid;
   int* votes;
   time_t votetime;
-  string s1(argv[1]);
-  string s2(argv[2]);
 
   if(argc < 3){
-    cout << "Introduce as an argument the number of candidates and the voter id"
+    cout << "Introduce as an argument the number of candidates and the voter id";
     cout << " for the program to run!\n";
     exit(-1);
   }
-  else if(!isNumber(s1) || !isNumber(s2)){
+  string s1(argv[1]);
+  string s2(argv[2]);
+  if(!isNumber(s1) || !isNumber(s2)){
     cout << "Introduce numbers and nothing else as an argument!\n";
     exit(-1);
   }

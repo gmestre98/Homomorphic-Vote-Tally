@@ -29,3 +29,4 @@ void install_election_public_key(int);
 void votertallyfolder(int);
 void weight_assign(int, int*);
 void setlastfolders();
+void installtallykeys();

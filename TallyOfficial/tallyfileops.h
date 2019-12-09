@@ -26,6 +26,7 @@
 using namespace std;
 using namespace seal;
 
+bool isNumber(string);
 char** mallarraystrings(int, int, string);
 void get_ballot_files(int*, char*, char**);
 int pstrcmp( const void*, const void*);
@@ -36,3 +37,7 @@ void verifyvotercert(int);
 char** verifysign(int*, int, char**, int*);
 char** verifycontent(char**, int, int*);
 char** verifytime(char**, int, int);
+void verifykeyssigns();
+void checksumvote(char*, int*, int, int);
+void verifyweightfiles(int);
+void electionresults(char**, int*, int);

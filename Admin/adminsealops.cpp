@@ -39,13 +39,12 @@ void generate_election_keys(){
   parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
   parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
   auto context = SEALContext::Create(parms);
-  PublicKey election_public_key;
-  SecretKey election_secret_key;
-
   // Key Generation
   KeyGenerator keygen(context);
-  election_public_key = keygen.public_key();
-  election_secret_key = keygen.secret_key();
+  PublicKey election_public_key = keygen.public_key();
+  SecretKey election_secret_key = keygen.secret_key();
+  RelinKeys relin_keys = keygen.relin_keys();
+  GaloisKeys gal_keys = keygen.galois_keys();
 
   // Saving the keys to files
   ofstream publickeyfile;
@@ -56,6 +55,14 @@ void generate_election_keys(){
   secretkeyfile.open("election_secret_key.txt", ofstream::binary);
   election_secret_key.save(secretkeyfile);
   secretkeyfile.close();
+  ofstream relinkeysfile;
+  relinkeysfile.open("relin_keys.txt", ofstream::binary);
+  relin_keys.save(relinkeysfile);
+  relinkeysfile.close();
+  ofstream galoiskeysfile;
+  galoiskeysfile.open("galois_keys.txt", ofstream::binary);
+  gal_keys.save(galoiskeysfile);
+  galoiskeysfile.close();
 
   // Moving the files to the right place
   system("sudo mkdir ../Proj/Keys");
@@ -63,6 +70,33 @@ void generate_election_keys(){
   system("sudo rm -r election_public_key.txt");
   system("sudo cp election_secret_key.txt ../Proj/Keys");
   system("sudo rm -r election_secret_key.txt");
+  system("sudo cp relin_keys.txt ../Proj/Keys");
+  system("sudo rm -r relin_keys.txt");
+  system("sudo cp galois_keys.txt ../Proj/Keys");
+  system("sudo rm -r galois_keys.txt");
+}
+
+void generate_symetric_key(){
+  string generatekey = "sudo openssl enc -nosalt -aes-256-cbc -k symetrickeycsc -P > symmetric_key.txt";
+  string encrypt = "sudo openssl enc -aes-256-cbc -kfile symmetric_key.txt -in ../Proj/Keys/election_secret_key.txt -out ../Proj/Keys/election_secret_key.txt.enc";
+  string symmetricKeyFile = "symmetric_key.txt";
+  char buf[100]={0};
+
+
+  system(generatekey.c_str());
+  ifstream f;
+  f.open(symmetricKeyFile);
+  string buffer;
+  f >> buffer;
+  sscanf(buffer.c_str(), "key=%s", buf);
+  f.close();
+
+  ofstream file;
+  file.open(symmetricKeyFile);
+  file << buf;
+  file.close();
+
+  system(encrypt.c_str());
 }
 
 /******************************************************************************
@@ -84,20 +118,21 @@ void breaksecretkey(){
   parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
   parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
   auto context = SEALContext::Create(parms);
+  string buf;
 
-  uint8_t secretkey[10000];
-  sss_Share shares[255];
+  uint8_t message[sss_MLEN];
+  sss_Share shares[5];
   // Getting the secret key from its file
   ifstream skey;
-  skey.open("../Proj/Keys/election_secret_key.txt", ios::binary);
-  SecretKey election_secret_key;
-  election_secret_key.load(context, skey);
+  skey.open("symmetric_key.txt");
+  skey >> buf;
   skey.close();
 
-  memcpy (&secretkey, &election_secret_key, sizeof(election_secret_key));
-  sss_create_shares(shares, secretkey, 255, 255);
+  generate_symetric_key();
+  memcpy (&message, &buf, sizeof(buf));
+  sss_create_shares(shares, message, 5, 4);
   system("cd .. && sudo mkdir Proj/Trustees");
-  for(int i=0; i < 255; i = i + 1){
+  for(int i=0; i < 5; i = i + 1){
     ofstream sharefile;
     string aaa = "sharefile";
     string txt = ".txt";
@@ -114,6 +149,7 @@ void breaksecretkey(){
     mv1.append(mv2);
     system(mv1.c_str());
   }
+  system("sudo mv symmetric_key.txt ../Proj/Keys");
 
 }
 
@@ -148,25 +184,17 @@ void weight_encryption(int nvoters, int* weights){
 
   // Setting the encryption process
   Encryptor encryptor(context, election_public_key);
-  BatchEncoder batch_encoder(context);
-  Plaintext plainvector;
-  Ciphertext encrypted_matrix;
-  size_t slot_count = batch_encoder.slot_count();
-  vector<uint64_t> pod_matrix(slot_count, 0ULL);
-
-  // Casting the weights to a vector of the necessary type
-  for(int i=0; i < nvoters; i = i + 1)
-    pod_matrix[i] = (uint64_t) weights[i];
-
-  // Encoding, encrypting and save the data to a file
-  batch_encoder.encode(pod_matrix, plainvector);
-  encryptor.encrypt(plainvector, encrypted_matrix);
-  ofstream weights_file;
-  weights_file.open("weights_file.txt", ofstream::binary);
-  encrypted_matrix.save(weights_file);
-  weights_file.close();
-
-  // Moving the file to the right place
-  system("sudo cp weights_file.txt ../Proj/Tally");
-  system("sudo rm -r weights_file.txt");
+  for(int i=0; i < nvoters; i = i + 1){
+    Plaintext xplain(to_string(weights[i]));
+    Ciphertext xencrypted;
+    ofstream weightsfile;
+    encryptor.encrypt(xplain, xencrypted);
+    weightsfile.open((to_string(i+1) + "_weights.txt").c_str(), ofstream::binary);
+    weightsfile << i + 1 << "\n";
+    xencrypted.save(weightsfile);
+    weightsfile.close();
+    system(("sudo mv " + to_string(i+1) + "_weights.txt ../Proj/Tally").c_str());
+    system(("sudo openssl dgst -sha256 -sign ../Proj/CA/my-ca.key -out " + to_string(i+1) + "_weights.sha256 ../Proj/Tally/" + to_string(i+1) + "_weights.txt").c_str());
+    system(("sudo mv " + to_string(i+1) + "_weights.sha256 ../Proj/Tally").c_str());
+  }
 }
