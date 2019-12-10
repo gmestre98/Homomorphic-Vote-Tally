@@ -28,6 +28,7 @@ using namespace seal;
 
 bool isNumber(string);
 char** mallarraystrings(int, int, string);
+void copyballot();
 void get_ballot_files(int*, char*, char**);
 int pstrcmp( const void*, const void*);
 char** validtxts(char**, char**, int, int, int*);

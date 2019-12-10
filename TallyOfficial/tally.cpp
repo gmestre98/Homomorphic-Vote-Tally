@@ -61,35 +61,17 @@ int main(int argc, char*argv[]){
     exit(-1);
   }
 
-  system("sudo rm -r ../Proj/Tally/BallotBox");
-  system("sudo cp -r ../Proj/BallotBox ../Proj/Tally");
-  get_ballot_files(&sizetxt, txt, filestxt);
-  get_ballot_files(&sizesha256, sha256, fsha256);
+  copyballot();
+  get_ballot_files(&sizetxt, txt, filestxt); // Gets the files with txt extension
+  get_ballot_files(&sizesha256, sha256, fsha256); // Gets the files with sha256 extension
   validfiles = validtxts(filestxt, fsha256, sizetxt, sizesha256, &validsize);
-  for(int i=0; i < sizetxt; i = i + 1)
-    free(filestxt[i]);
-  for(int i=0; i < sizesha256; i = i + 1)
-    free(fsha256[i]);
-  free(filestxt);
-  free(fsha256);
   voterfilter = voterfiltervalids(validfiles, validsize, nvoters);
   signfiles = verifysign(voterfilter, validsize, validfiles, &valsignsize);
-  for(int i=0; i < validsize; i = i + 1)
-    free(validfiles[i]);
-  free(validfiles);
-  free(voterfilter);
   valcontent = verifycontent(signfiles, valsignsize, &valcontentsize);
-  for(int i=0; i < valsignsize; i = i + 1)
-    free(signfiles[i]);
-  free(signfiles);
   votesfinal = verifytime(valcontent, valcontentsize, nvoters);
-  for(int i=0; i < nvoters; i = i + 1)
-    cout << "oi" << votesfinal[i] << "\n";
   verifykeyssigns();
-  system("sudo mkdir ../Proj/Counter");
   for(int i=0; i < nvoters; i = i + 1)
     checksumvote(votesfinal[i], electionvotes, i, ncandidates);
-
   verifyweightfiles(nvoters);
   electionresults(votesfinal, electionvotes, nvoters);
 }

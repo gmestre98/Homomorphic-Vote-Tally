@@ -2,7 +2,7 @@
 *
 * File Name: adminsealops.cpp
 * Authors:   Gonçalo Mestre & Carolina Zerbes & Rui Pedro Silva
-* Revision:  07 Dec 2019
+* Revision:  10 Dec 2019
 *
 * NAME
 *  adminsealops - Declaration of the functions needed for the admin operations
@@ -76,26 +76,25 @@ void generate_election_keys(){
   system("sudo rm -r galois_keys.txt");
 }
 
-void generate_symetric_key(){
-  string generatekey = "sudo openssl enc -nosalt -aes-256-cbc -k symetrickeycsc -pbkdf2 -P > symmetric_key.txt";
-  string encrypt = "sudo openssl enc -aes-256-cbc -pbkdf2 -kfile symmetric_key.txt -in ../Proj/Keys/election_secret_key.txt -out ../Proj/Keys/election_secret_key.enc";
-  string symmetricKeyFile = "symmetric_key.txt";
-  char buf[100]={0};
 
+/******************************************************************************
+ * generate_symetric_key()
+ *
+ * Arguments: none
+ * Returns: none
+ *
+ * Description: Generates the symetric key 64 bits and an iv to store it in
+ *  a file that will be modified to contain only the key itself.
+ *  Then encrypts the secret key election with the previously generated key
+ *  and save the operation result in the file named
+ *   encrypted_election_secret_key.txt.
+ *
+ *****************************************************************************/
+void generate_symetric_key(){
+  string generatekey = "openssl rand 64 > sym_keyfile.txt";
+  string encrypt = "sudo openssl enc -aes-256-cbc -pbkdf2 -kfile sym_keyfile.txt -in ../Proj/Keys/election_secret_key.txt -out ../Proj/Keys/election_secret_key.enc";
 
   system(generatekey.c_str());
-  ifstream f;
-  f.open(symmetricKeyFile);
-  string buffer;
-  f >> buffer;
-  sscanf(buffer.c_str(), "key=%s", buf);
-  f.close();
-
-  ofstream file;
-  file.open(symmetricKeyFile);
-  file << buf;
-  file.close();
-
   system(encrypt.c_str());
 }
 
@@ -105,36 +104,27 @@ void generate_symetric_key(){
  * Arguments: none
  * Returns: none
  *
- * Description: MEXE NESTA BONZAS USAR O SHAMIR
- * GERAR CHAVE SIMETRICA, NAO PODE TER MAIS DE 64 BYTES, USAR OPENSSL
- * SABER COMO ENCRIPTAR COM ESTA CHAVE E DESENCRIPTAR
+ * Description: This function calls the function that generates the file with
+ *  the symmetric key, then it breaks the content of this file into 5 shares and
+ *  stores it on the trustees and signs the content
  *
  *****************************************************************************/
 void breaksecretkey(){
-  // Setting the parameters for the key load
-  EncryptionParameters parms(scheme_type::BFV);
-  size_t poly_modulus_degree = 8192;
-  parms.set_poly_modulus_degree(poly_modulus_degree);
-  parms.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
-  parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, 20));
-  auto context = SEALContext::Create(parms);
-  string buf;
-
-  uint8_t message[sss_MLEN], restored[sss_MLEN];
-  sss_Share shares[2];
-  int tmp;
-  // Getting the secret key from its file
-  ifstream skey;
-  skey.open("symmetric_key.txt");
-  skey >> buf;
-  skey.close();
+  char buf[64];
+  uint8_t message[sss_MLEN];
+  sss_Share shares[5];
 
   generate_symetric_key();
+  // Getting the secret key from its file
+  ifstream skey;
+  skey.open("sym_keyfile.txt", ios::binary);
+  skey.read(buf, 64);
+  skey.close();
   memcpy (&message, &buf, sizeof(buf));
-  sss_create_shares(shares, message, 2, 2);
+  sss_create_shares(shares, message, 5, 5);
   system("cd .. && sudo mkdir Proj/Trustees");
   system("sudo mv ../Proj/Keys/election_secret_key.enc ../Proj/Trustees");
-  for(int i=0; i < 2; i = i + 1){
+  for(int i=0; i < 5; i = i + 1){
     ofstream sharefile;
     string aaa = "sharefile";
     string txt = ".txt";
@@ -142,21 +132,17 @@ void breaksecretkey(){
     string mv2 = " ../Proj/Trustees";
     aaa.append(to_string(i + 1));
     aaa.append(txt);
-
     sharefile.open(aaa, ofstream::binary);
-    sharefile.write((char*)shares[i], sizeof(shares[i]));
+    sharefile.write((char*)shares[i], sizeof(sss_Share));
     sharefile.close();
-
     mv1.append(aaa);
     mv1.append(mv2);
     system(mv1.c_str());
     system(("sudo openssl dgst -sha256 -sign ../Proj/CA/my-ca.key -out ../Proj/Trustees/sharefile" + to_string(i+1) + ".sha256 ../Proj/Trustees/sharefile" + to_string(i+1) + ".txt").c_str());
   }
-  system("sudo mv symmetric_key.txt ../Proj/Keys");
+  system("sudo rm -r sym_keyfile.txt");
+  system("sudo rm -r ../Proj/Keys/election_secret_key.txt");
   system("sudo openssl dgst -sha256 -sign ../Proj/CA/my-ca.key -out ../Proj/Trustees/election_secret_key.sha256 ../Proj/Trustees/election_secret_key.enc");
-	tmp = sss_combine_shares(restored, shares, 2);
-	assert(tmp == 0);
-	assert(memcmp(restored, message, sss_MLEN) == 0);
 }
 
 

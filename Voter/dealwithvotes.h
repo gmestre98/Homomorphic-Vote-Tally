@@ -27,6 +27,6 @@ void verifypublickey(int);
 void verifyvotercert(int);
 void verifyvoterkey(int);
 string timestr(time_t);
-void givecertstotally(int);
+void givecertsto_tally(int);
 time_t encryptvote(int*, int, int);
 void signvote(int, time_t);

@@ -2,7 +2,7 @@
 *
 * File Name: admin.cpp
 * Authors:   Gonçalo Mestre & Carolina Zerbes & Rui Pedro Silva
-* Revision:  07 Dec 2019
+* Revision:  10 Dec 2019
 *
 * NAME
 *  admin - Execution of all the functions needed to setup the Homomorphic Vote
@@ -36,14 +36,14 @@ int main(int argc, char *argv[]){
 
   int nvoters;
   int* weights = NULL;
-  string s(argv[1]);
 
   if(argc < 2){
     cout << "Introduce as an argument the necessary number of voters for the";
     cout << " program to run!\n";
     exit(-1);
   }
-  else if(!isNumber(s)){
+  string s(argv[1]);
+  if(!isNumber(s)){
     cout << "Introduce a number and nothing else as an argument!\n";
     exit(-1);
   }

@@ -2,7 +2,7 @@
 *
 * File Name: voter.cpp
 * Authors:   Gonçalo Mestre & Carolina Zerbes & Rui Pedro Silva
-* Revision:  07 Dec 2019
+* Revision:  10 Dec 2019
 *
 * NAME
 *  admin - This allows a user to vote on the wanted election and puts the vote
@@ -56,7 +56,7 @@ int main(int argc, char*argv[]){
   verifypublickey(voterid);
   verifyvoterkey(voterid);
   verifyvotercert(voterid);
-  givecertstotally(voterid);
+  givecertsto_tally(voterid);
   votetime = encryptvote(votes, ncandidates, voterid);
   signvote(voterid, votetime);
 }

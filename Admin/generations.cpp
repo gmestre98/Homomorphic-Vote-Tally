@@ -2,7 +2,7 @@
 *
 * File Name: generations.cpp
 * Authors:   Gonçalo Mestre & Carolina Zerbes & Rui Pedro Silva
-* Revision:  07 Dec 2019
+* Revision:  10 Dec 2019
 *
 * NAME
 *  adminsealops - Declaration of the functions needed for general admin operations
@@ -242,7 +242,7 @@ void weight_assign(int nvoters, int *weights){
     cout << "Insert a weight between 1 and 100 of the vote for voter " << i + 1 << ":\n";
     do{
       cin >> a;
-    }while(stoi(a) < 1  ||  stoi(a) > 100);
+    }while(!isNumber(a) || stoi(a) < 1  ||  stoi(a) > 100);
     weights[i] = stoi(a);
   }
 }

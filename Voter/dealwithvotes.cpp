@@ -2,7 +2,7 @@
 *
 * File Name: dealwithvotes.cpp
 * Authors:   Gonçalo Mestre & Carolina Zerbes & Rui Pedro Silva
-* Revision:  07 Dec 2019
+* Revision:  10 Dec 2019
 *
 * NAME
 *  dealwithvotes - Declaration of the functions needed for general voter ops
@@ -28,11 +28,11 @@ using namespace seal;
  *  returns a boolean according to that
  *
  *****************************************************************************/
-bool isNumber(string s)
-{
-    for (int i = 0; i < s.length(); i++)
+bool isNumber(string s){
+    for (int i = 0; i < s.length(); i++){
         if (isdigit(s[i]) == false)
             return false;
+    }
 
     return true;
 }
@@ -58,7 +58,7 @@ void readvotes(int ncandidates, int* votes){
     cout << "After this vote, you will have " << ncandidates - i - 1 << " votes left!\n";
     do{
       cin >> a;
-    }while(stoi(a) < 1 || stoi(a) > ncandidates);
+    }while(!isNumber(a) || stoi(a) < 1 || stoi(a) > ncandidates);
     votes[stoi(a) - 1] = votes[stoi(a) - 1] + 1;
   }
 }
@@ -198,7 +198,7 @@ string timestr(time_t t){
  *  signed file to the Tally Official
  *
  *****************************************************************************/
-void givecertstotally(int voterid){
+void givecertsto_tally(int voterid){
   string certcop1 = "sudo cp ../Proj/Voters/";
   string certcop2 = "/voter-cert.csr";
   string certcop3 = " ../Proj/Tally/Voters/";

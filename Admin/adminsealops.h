@@ -2,7 +2,7 @@
 *
 * File Name: adminsealops.h
 * Authors:   Gonçalo Mestre & Carolina Zerbes & Rui Pedro Silva
-* Revision:  07 Dec 2019
+* Revision:  10 Dec 2019
 *
 * NAME
 *  adminsealops - Header file for the adminsealops.cpp

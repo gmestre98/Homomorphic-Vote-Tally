@@ -69,6 +69,20 @@ char** mallarraystrings(int n1, int n2, string error){
 }
 
 /******************************************************************************
+ * copyballot()
+ *
+ * Arguments: none
+ * Returns: none
+ *
+ * Description: Copies the ballot box to the tally folder
+ *
+ *****************************************************************************/
+void copyballot(){
+  system("sudo rm -r ../Proj/Tally/BallotBox");
+  system("sudo cp -r ../Proj/BallotBox ../Proj/Tally");
+}
+
+/******************************************************************************
  * get_ballot_files()
  *
  * Arguments: - Pointer for the number of found files
@@ -169,8 +183,18 @@ char** validtxts(char** filestxt, char** fsha256, int sizetxt, int sizesha256, i
       }
     }
   }
+  for(int i=0; i < sizetxt; i = i + 1){
+    free(filestxt[i]);
+    free(tokentxt[i]);
+  }
+  for(int i=0; i < sizesha256; i = i + 1){
+    free(fsha256[i]);
+    free(tokensha256[i]);
+  }
   free(tokentxt);
   free(tokensha256);
+  free(filestxt);
+  free(fsha256);
   return valids;
 }
 
@@ -308,6 +332,10 @@ char** verifysign(int*voterfilter, int validsize, char** validfiles, int* valsig
       *valsignsize = *valsignsize + 1;
     }
   }
+  for(int i=0; i < validsize; i = i + 1)
+    free(validfiles[i]);
+  free(validfiles);
+  free(voterfilter);
   return ret;
 }
 
@@ -330,7 +358,6 @@ char** verifycontent(char** signfiles, int valsignsize, int* valcontentsize){
   char** ret = mallarraystrings(valsignsize, MAX_VOTES, "content val array");
   string a;
 
-  cout << "\n\n\n\n\n";
   for(int i=0; i < valsignsize; i=i+1){
     string s(signfiles[i]);
     string token, token2;
@@ -362,12 +389,10 @@ char** verifycontent(char** signfiles, int valsignsize, int* valcontentsize){
       cout << ret[*valcontentsize] << "\n";
       *valcontentsize = *valcontentsize + 1;
     }
-    ofstream errfile;
-    string alfa(signfiles[i]);
-    errfile.open((alfa + ".err").c_str(), ofstream::binary);
-    enc_vote.save(errfile);
-    errfile.close();
   }
+  for(int i=0; i < valsignsize; i = i + 1)
+    free(signfiles[i]);
+  free(signfiles);
   return ret;
 }
 
@@ -401,7 +426,9 @@ char** verifytime(char** valcontent, int valcontentsize, int nvoters){
           memcpy(ret[i], valcontent[j], strlen(valcontent[j])*sizeof(char));
       }
     }
-
+    for(int i=0; i < valcontentsize; i = i + 1)
+      free(valcontent[i]);
+    free(valcontent);
     return ret;
 }
 
@@ -470,11 +497,7 @@ void checksumvote(char* votename, int* votes, int voter, int ncandidates){
     string s(votename);
     string a;
     Evaluator evaluator(context);
-    Ciphertext *aux = (Ciphertext *)malloc(ncandidates*sizeof(Ciphertext));
-    if(aux == NULL){
-      cout << "Here there is a serious error on alocating the aux holy graal\n";
-      exit(-1);
-    }
+    Ciphertext aux, aux2;
 
     // Getting the relin keys and galois keys
     relfile.open("../Proj/Tally/relin_keys.txt", ios::binary);
@@ -484,25 +507,25 @@ void checksumvote(char* votename, int* votes, int voter, int ncandidates){
     galois_keys.load(context, galfile);
     galfile.close();
     // Getting the encrypted vote to be processed
-    cout << s + ".err" << "\n";
-    votefile.open((s + ".err").c_str(), ofstream::binary);
+    votefile.open(("../Proj/Tally/BallotBox/" + s + ".txt").c_str(), ofstream::binary);
+    getline(votefile, a);
     enc_vote.load(context, votefile);
     votefile.close();
 
     // Here is where magic will happen thanks to rotations and sums
-    for(int i=0; i < ncandidates; i = i + 1)
-      memcpy(&(aux[i]), &enc_vote, sizeof(Ciphertext));
-    for(int i=1; i < ncandidates; i = i + 1){
-      evaluator.rotate_rows_inplace(aux[i], i ,galois_keys);
-      evaluator.add_inplace(aux[0], aux[i]);
+    aux = enc_vote;
+    for(int j=1; j < ncandidates; j = j + 1){
+      aux2 = aux;
+      evaluator.rotate_rows_inplace(aux2, j, galois_keys);
+      evaluator.add_inplace(enc_vote, aux2);
+      evaluator.relinearize_inplace(enc_vote, relin_keys);
     }
 
     // Now let's save the checksum for this voter on a file
     ofstream mostimportantfileever;
     mostimportantfileever.open(("Voter" + to_string(voter+1) + ".txt").c_str(), ofstream::binary);
-    (aux[0]).save(mostimportantfileever);
+    enc_vote.save(mostimportantfileever);
     mostimportantfileever.close();
-    free(aux);
     system(("sudo mv Voter" + to_string(voter + 1) + ".txt ../Proj/Counter").c_str());
   }
 }
@@ -577,7 +600,8 @@ void electionresults(char **votesfinal, int* electionvotes, int nvoters){
 
 
   string s(votesfinal[startpoint]);
-  file.open((s + ".err").c_str(), ofstream::binary);
+  file.open(("../Proj/Tally/BallotBox/" + s + ".txt").c_str(), ofstream::binary);
+  getline(file, a);
   result.load(context, file);
   file.close();
   file.open(("../Proj/Tally/" + to_string(startpoint+1) + "_weights.txt").c_str(), ios::binary);
@@ -590,11 +614,12 @@ void electionresults(char **votesfinal, int* electionvotes, int nvoters){
       continue;
     else{
       string s2(votesfinal[i]);
-      file.open((s2 + ".err").c_str(), ofstream::binary);
+      file.open(("../Proj/Tally/BallotBox/" + s + ".txt").c_str(), ofstream::binary);
+      getline(file, a);
       aux.load(context, file);
       file.close();
       file.open(("../Proj/Tally/" + to_string(i+1) + "_weights.txt").c_str(), ios::binary);
-      file.open(("../Proj/Tally/" + to_string(i+1) + "_weights.txt").c_str(), ios::binary);
+      getline(file, a);
       weight.load(context, file);
       file.close();
       evaluator.multiply_inplace(aux, weight);
