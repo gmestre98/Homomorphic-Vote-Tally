@@ -1,4 +1,0 @@
-/home/gmestre/Homomorphic-Vote-Tally/Voter/CMakeFiles/edit_cache.dir
-/home/gmestre/Homomorphic-Vote-Tally/Voter/CMakeFiles/rebuild_cache.dir
-/home/gmestre/Homomorphic-Vote-Tally/Voter/CMakeFiles/deal.dir
-/home/gmestre/Homomorphic-Vote-Tally/Voter/CMakeFiles/voter.dir

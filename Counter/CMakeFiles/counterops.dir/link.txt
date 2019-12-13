@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcounterops.a  CMakeFiles/counterops.dir/counterops.cpp.o
-/usr/bin/ranlib libcounterops.a

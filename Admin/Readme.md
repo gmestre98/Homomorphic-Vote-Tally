@@ -31,6 +31,6 @@ effect it implements the following things:
 **Usage:**
 To run this program first it is need to generate a make file using a CMake
 command, then compile the program using this make file and run the program.
-1. cmake . -DCMAKE_PREFIX_PATH=~/mylibs
-2. make
-3. ./admin [number of voters]
+* cmake . -DCMAKE_PREFIX_PATH=~/mylibs
+* make
+* ./admin [number of voters]

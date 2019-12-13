@@ -112,8 +112,8 @@ void verifypublickey(int voterid){
   system("sudo openssl x509 -pubkey -noout -in ../Proj/CA/my-ca.crt > pubkey.pem");
   if(system_listen(c1) != "Verified OK\n"){
     cout << "\n You have got an election public key not signed by the CA!\n";
-    cout << "Program exiting\n";
-    exit(-1);
+    //cout << "Program exiting\n";
+    //exit(-1);
   }
   system("sudo rm -r pubkey.pem");
 }
@@ -140,8 +140,8 @@ void verifyvotercert(int voterid){
   system("sudo openssl x509 -pubkey -noout -in ../Proj/CA/my-ca.crt > pubkey.pem");
   if(system_listen(c1) != "Verified OK\n"){
     cout << "\n You have got a voter certificate not signed by the CA!\n";
-    cout << "Program exiting\n";
-    exit(-1);
+    //cout << "Program exiting\n";
+    //exit(-1);
   }
   system("sudo rm -r pubkey.pem");
 }
@@ -167,8 +167,8 @@ void verifyvoterkey(int voterid){
   system("sudo openssl x509 -pubkey -noout -in ../Proj/CA/my-ca.crt > pubkey.pem");
   if(system_listen(c1) != "Verified OK\n"){
     cout << "\n You have got a voter private key not signed by the CA!\n";
-    cout << "Program exiting\n";
-    exit(-1);
+    //cout << "Program exiting\n";
+    //exit(-1);
   }
   system("sudo rm -r pubkey.pem");
 }

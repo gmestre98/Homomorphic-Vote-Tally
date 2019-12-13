@@ -1,2 +1,0 @@
-/usr/bin/ar qc libdeal.a  CMakeFiles/deal.dir/dealwithvotes.cpp.o
-/usr/bin/ranlib libdeal.a

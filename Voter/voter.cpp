@@ -48,8 +48,10 @@ int main(int argc, char*argv[]){
   voterid = stoi(argv[2]);
 
   votes = (int*)malloc(ncandidates*sizeof(int));
-  if(votes == NULL)
+  if(votes == NULL){
     cout << "votes vector error initializing!\n";
+    exit(-1);
+  }
   memset(votes, 0, ncandidates*sizeof(int));
 
   readvotes(ncandidates, votes);
