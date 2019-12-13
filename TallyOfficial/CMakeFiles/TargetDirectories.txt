@@ -1,4 +1,0 @@
-/home/gmestre/Homomorphic-Vote-Tally/TallyOfficial/CMakeFiles/rebuild_cache.dir
-/home/gmestre/Homomorphic-Vote-Tally/TallyOfficial/CMakeFiles/edit_cache.dir
-/home/gmestre/Homomorphic-Vote-Tally/TallyOfficial/CMakeFiles/tallyfileops.dir
-/home/gmestre/Homomorphic-Vote-Tally/TallyOfficial/CMakeFiles/tally.dir

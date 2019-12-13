@@ -2,7 +2,7 @@
 *
 * File Name: tallyfileops.cpp
 * Authors:   Gonçalo Mestre & Carolina Zerbes & Rui Pedro Silva
-* Revision:  07 Dec 2019
+* Revision:  13 Dec 2019
 *
 * NAME
 *  adminsealops - Declaration of the functions needed for general operations on
@@ -199,7 +199,7 @@ char** validtxts(char** filestxt, char** fsha256, int sizetxt, int sizesha256, i
 }
 
 /******************************************************************************
- * voterfiltervalid()
+ * voterfiltervalids()
  *
  * Arguments: - Array of strings with the files that have a match between txt
  *          and sha256
@@ -216,8 +216,10 @@ char** validtxts(char** filestxt, char** fsha256, int sizetxt, int sizesha256, i
 int* voterfiltervalids(char** validfiles, int validsize, int nvoters){
   string comp;
   int *ret=(int *)malloc(validsize*sizeof(int));
-  if(ret == NULL)
+  if(ret == NULL){
     cout << "ERROR ALLOCATING voterfiltervector!!\n";
+    exit(-1);
+  }
   memset(ret, 0, validsize*sizeof(int));
 
 
@@ -614,7 +616,7 @@ void electionresults(char **votesfinal, int* electionvotes, int nvoters){
       continue;
     else{
       string s2(votesfinal[i]);
-      file.open(("../Proj/Tally/BallotBox/" + s + ".txt").c_str(), ofstream::binary);
+      file.open(("../Proj/Tally/BallotBox/" + s2 + ".txt").c_str(), ofstream::binary);
       getline(file, a);
       aux.load(context, file);
       file.close();

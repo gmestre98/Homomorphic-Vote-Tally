@@ -53,6 +53,8 @@ void readvotes(int ncandidates, int* votes){
   cout << "There are " << ncandidates << " candidates for this election!\n";
   cout << "The number of votes you have is also " << ncandidates << "\n";
   cout << "For each vote introduce a number between 1 and " << ncandidates << "\n";
+  for(int i=0; i < ncandidates; i = i + 1)
+    votes[i] = 0;
   for(int i=0; i < ncandidates; i = i + 1){
     cout << "Introduce your vote number " << i + 1 << "\n";
     cout << "After this vote, you will have " << ncandidates - i - 1 << " votes left!\n";

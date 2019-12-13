@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/tally.dir/tally.cpp.o  -o tally libtallyfileops.a /usr/local/lib/libseal-3.4.a -pthread /usr/lib/x86_64-linux-gnu/libz.so 

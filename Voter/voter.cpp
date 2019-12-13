@@ -52,7 +52,6 @@ int main(int argc, char*argv[]){
     cout << "votes vector error initializing!\n";
     exit(-1);
   }
-  memset(votes, 0, ncandidates*sizeof(int));
 
   readvotes(ncandidates, votes);
   verifypublickey(voterid);
