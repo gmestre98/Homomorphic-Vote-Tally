@@ -54,8 +54,11 @@ int main(int argc, char *argv[]){
   nvoters = stoi(argv[1]);
 
   weights = (int*)malloc(nvoters*sizeof(int));
-  if(weights == NULL)
+  if(weights == NULL){
     cout << "error creating weight array!\n";
+    exit(-1);
+  }
+  
   generaterootca();
   installrootCAtally();
   generate_election_keys();

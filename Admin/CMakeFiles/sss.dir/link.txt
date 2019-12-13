@@ -1,2 +1,0 @@
-/usr/bin/ar qc libsss.a  CMakeFiles/sss.dir/sss.c.o
-/usr/bin/ranlib libsss.a

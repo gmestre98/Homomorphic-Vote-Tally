@@ -1,2 +1,0 @@
-/usr/bin/ar qc libGenerations.a  CMakeFiles/Generations.dir/generations.cpp.o
-/usr/bin/ranlib libGenerations.a

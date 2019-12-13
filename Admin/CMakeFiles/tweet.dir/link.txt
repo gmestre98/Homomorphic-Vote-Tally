@@ -1,2 +1,0 @@
-/usr/bin/ar qc libtweet.a  CMakeFiles/tweet.dir/tweetnacl.c.o
-/usr/bin/ranlib libtweet.a
